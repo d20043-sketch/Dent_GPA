@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SKGZ3KNR14"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SKGZ3KNR14');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Degree Goal Planner</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        :root { --primary: #2563eb; --danger: #dc2626; --success: #16a34a; --bg: #f8fafc; --card: #ffffff; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: #0f172a; margin: 0; padding: 16px; line-height: 1.5; }
+        .container { max-width: 480px; margin: 0 auto; background: var(--card); padding: 24px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 300px; }
+        h2 { text-align: center; color: var(--primary); margin-bottom: 30px; font-weight: 800; }
+        
+        /* Step 1: Context Box */
+        .context-box { background: #eff6ff; padding: 20px; border-radius: 12px; margin-bottom: 24px; text-align: center; border: 1px solid #dbeafe; }
+        label { font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 10px; color: #1e293b; }
+        select { width: 100%; padding: 12px; font-size: 1rem; border-radius: 8px; border: 1px solid #cbd5e1; background: white; text-align: center; cursor: pointer; -webkit-appearance: none; }
+        
+        /* Step 2: Inputs */
+        .semester-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #f1f5f9; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .sem-name { font-weight: 600; font-size: 0.95rem; display: block; }
+        .sem-credits { font-size: 0.75rem; color: #64748b; }
+        
+        input[type="number"] { width: 85px; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-size: 1.1rem; outline: none; transition: 0.2s; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        input.error { border-color: var(--danger); background: #fef2f2; }
+        
+        /* Helper Text */
+        .start-hint { text-align: center; color: #94a3b8; font-size: 0.9rem; margin-top: 40px; font-style: italic; }
+
+        /* Step 3: Results */
+        .cgpa-box { text-align: center; background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .cgpa-title { font-size: 0.8rem; color: #64748b; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
+        .cgpa-value { font-size: 3rem; font-weight: 800; color: var(--primary); line-height: 1.1; margin: 5px 0; }
+        
+        /* Goals List */
+        .goals-list { list-style: none; padding: 0; }
+        .goal-item { padding: 12px 0; border-bottom: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .status-impossible { color: var(--danger); font-weight: bold; font-size: 0.9rem; }
+        .status-track { color: var(--success); font-weight: bold; font-size: 0.9rem; }
+        .goal-val { font-weight: bold; font-size: 1rem; }
+
+        /* Footer */
+        .btn-reset { display: block; width: 100%; margin-top: 30px; padding: 12px; background: none; border: 1px dashed #cbd5e1; color: #64748b; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-reset:hover { background: #fee2e2; color: var(--danger); border-color: var(--danger); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>GPA Calculaor</h2>
+    
+    <div class="context-box">
+        <label for="current-sem-select">I am currently in:</label>
+        <select id="current-sem-select">
+            <option value="0" disabled selected>-- Tap to Select --</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            <option value="9">9th Semester</option>
+            <option value="10">10th Semester</option>
+        </select>
+    </div>
+
+    <div id="inputs-container">
+        <div class="start-hint" id="start-hint">Select your semester to see your grades...</div>
+    </div>
+
+    <div id="results-panel" style="display:none; margin-top:30px;">
+        <div class="cgpa-box">
+            <div class="cgpa-title">Current CGPA</div>
+            <div class="cgpa-value" id="final-cgpa">0.00</div>
+            <div style="font-size:0.8rem; color:#64748b;">Credits Attempted: <span id="completed-credits">0</span></div>
+        </div>
+
+        <h3 style="font-size:1rem; margin-top:20px; color:#334155; border-bottom: 2px solid #f1f5f9; padding-bottom:10px;">Future Targets:</h3>
+        <ul id="goals-list" class="goals-list"></ul>
+    </div>
+
+    <button class="btn-reset" id="reset-btn">Clear Data</button>
+</div>
+
+<script>
+    // --- DATA ---
+    const semesterData = [
+        { id: 1, name: "1st Semester", credits: 14 },
+        { id: 2, name: "2nd Semester", credits: 15 },
+        { id: 3, name: "3rd Semester", credits: 17 },
+        { id: 4, name: "4th Semester", credits: 15 },
+        { id: 5, name: "5th Semester", credits: 14 },
+        { id: 6, name: "6th Semester", credits: 16 },
+        { id: 7, name: "7th Semester", credits: 18 },
+        { id: 8, name: "8th Semester", credits: 16 },
+        { id: 9, name: "9th Semester", credits: 17 },
+        { id: 10, name: "10th Semester", credits: 18 }
+    ];
+
+    const honorsGoals = [
+        { name: "First Class", minCGPA: 3.70 },
+        { name: "Second Upper", minCGPA: 3.30 },
+        { name: "Second Lower", minCGPA: 3.00 }
+    ];
+
+    // --- STORAGE ---
+    const safeStorage = {
+        setItem: function(k, v) { try { localStorage.setItem(k, v); } catch(e) {} },
+        getItem: function(k) { try { return localStorage.getItem(k); } catch(e) { return null; } },
+        clear: function() { try { localStorage.clear(); } catch(e) {} }
+    };
+
+    // --- LOGIC ---
+    const container = document.getElementById('inputs-container');
+    const selectBox = document.getElementById('current-sem-select');
+    const resetBtn = document.getElementById('reset-btn');
+
+    function init() {
+        const saved = safeStorage.getItem('userCurrentSem');
+        // Restore if valid and >= 2 (app starts at 2nd semester)
+        if (saved && Number(saved) >= 2) {
+            selectBox.value = saved;
+            updateUI();
+        }
+
+        // Attach UI listeners
+        selectBox.addEventListener('change', () => {
+            updateUI();
+        });
+
+        resetBtn.addEventListener('click', resetData);
+    }
+
+    function updateUI() {
+        const level = parseInt(selectBox.value);
+        if (isNaN(level) || level === 0) return;
+
+        safeStorage.setItem('userCurrentSem', level);
+
+        container.innerHTML = '';
+
+        semesterData.forEach((sem, idx) => {
+            // Show all semesters UP TO the current one
+            if (idx < level) {
+                const row = document.createElement('div');
+                row.className = 'semester-row';
+
+                const info = document.createElement('div');
+                const name = document.createElement('span');
+                name.className = 'sem-name';
+                name.textContent = (idx + 1) === level ? `${sem.name} (Current)` : sem.name;
+
+                const credits = document.createElement('span');
+                credits.className = 'sem-credits';
+                credits.textContent = `${sem.credits} Credits`;
+
+                info.appendChild(name);
+                info.appendChild(credits);
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.id = `gpa-${idx}`;
+                input.step = '0.01';
+                input.min = '0';
+                input.max = '4.0';
+                input.placeholder = '-';
+                input.inputMode = 'decimal';
+
+                // Restore stored value if present
+                const stored = safeStorage.getItem(`gpa_sem_${idx}`);
+                if (stored) input.value = stored;
+
+                // Attach listener
+                input.addEventListener('input', () => handleInput(input, idx));
+
+                row.appendChild(info);
+                row.appendChild(input);
+
+                container.appendChild(row);
+            }
+        });
+
+        // Initial calculation after rebuilding inputs
+        recalc();
+    }
+
+    function handleInput(input, idx) {
+        const v = parseFloat(input.value);
+        if (!Number.isFinite(v) || v < 0 || v > 4.0) {
+            input.classList.add('error');
+        } else {
+            input.classList.remove('error');
+            safeStorage.setItem(`gpa_sem_${idx}`, input.value);
+        }
+        recalc();
+    }
+
+    function recalc() {
+        let pts = 0, cr = 0, tot = 0;
+        // Total Credits for Degree
+        semesterData.forEach(s => tot += s.credits);
+
+        // Calculate Current
+        semesterData.forEach((sem, i) => {
+            const el = document.getElementById(`gpa-${i}`);
+            if (el && el.value !== "") {
+                const v = parseFloat(el.value);
+                if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
+                    pts += (v * sem.credits);
+                    cr += sem.credits;
+                }
+            }
+        });
+
+        const panel = document.getElementById('results-panel');
+        if (cr === 0) { panel.style.display = 'none'; return; }
+
+        panel.style.display = 'block';
+        const cgpa = pts / cr;
+        const cgpaEl = document.getElementById('final-cgpa');
+        cgpaEl.innerText = isFinite(cgpa) ? cgpa.toFixed(2) : '0.00';
+        document.getElementById('completed-credits').innerText = cr;
+
+        // Calculate Future
+        const remCr = tot - cr;
+        const list = document.getElementById('goals-list');
+        list.innerHTML = '';
+
+        honorsGoals.forEach(g => {
+            let html = '';
+            if (remCr <= 0) {
+                // Degree Complete
+                html = cgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
+            } else {
+                // Degree In Progress
+                const reqRaw = ((g.minCGPA * tot) - pts) / remCr;
+                const req = reqRaw;
+
+                if (req > 4.0) html = '<span class="status-impossible">Non attainable ❌</span>';
+                else if (req <= 0) html = '<span class="status-track">Secured ✅</span>';
+                else if (isFinite(cgpa) && cgpa >= req) html = '<span class="status-track">On Track ✅</span>';
+                else html = `<span class="goal-val">${Math.min(4.0, Math.max(0, req)).toFixed(2)}</span>`;
+            }
+
+            // Determine upcoming semesters (count of semesters left based on inputs entered)
+            const completedSemesters = semesterData.reduce((c, s, i) => {
+                const el = document.getElementById(`gpa-${i}`);
+                return c + (el && el.value !== '' ? 1 : 0);
+            }, 0);
+            const upcomingSemesters = Math.max(0, semesterData.length - completedSemesters);
+
+            // Build subtext explaining the required average across upcoming semesters
+            let subtext = '';
+            if (remCr <= 0) {
+                subtext = '';
+            } else {
+                const reqAcross = ((g.minCGPA * tot) - pts) / remCr;
+                if (!isFinite(reqAcross)) subtext = '';
+                else if (reqAcross > 4.0) subtext = `In upcoming ${upcomingSemesters} semesters you would need an average ≥ ${reqAcross.toFixed(2)} (Non attainable).`;
+                else if (reqAcross <= 0) subtext = `No additional average required — goal secured.`;
+                else subtext = `In upcoming ${upcomingSemesters} semesters your average should be ≥ ${Math.min(4.0, Math.max(0, reqAcross)).toFixed(2)}.`;
+            }
+
+            const li = document.createElement('li');
+            li.className = 'goal-item';
+            li.innerHTML = `
+                <div>
+                    ${g.name} <small style="color:#64748b">(${g.minCGPA})</small>
+                    ${subtext ? `<div style="color:#64748b; font-size:0.8rem; margin-top:6px;">${subtext}</div>` : ''}
+                </div>
+                <div>${html}</div>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    function getInputs() {
+        const d = {};
+        semesterData.forEach((_, i) => {
+            const el = document.getElementById(`gpa-${i}`);
+            if (el) d[i] = el.value;
+        });
+        return d;
+    }
+
+    function calc(input, idx) {
+        if (input) {
+            let val = parseFloat(input.value);
+            if (val > 4.0) input.classList.add('error');
+            else { 
+                input.classList.remove('error'); 
+                safeStorage.setItem(`gpa_sem_${idx}`, input.value); 
+            }
+        }
+        
+        let pts = 0, cr = 0, tot = 0;
+        // Total Credits for Degree
+        semesterData.forEach(s => tot += s.credits);
+
+        // Calculate Current
+        semesterData.forEach((sem, i) => {
+            const el = document.getElementById(`gpa-${i}`);
+            if (el && el.value !== "" && !isNaN(el.value) && el.value <= 4.0) {
+                pts += (parseFloat(el.value) * sem.credits);
+                cr += sem.credits;
+            }
+        });
+
+        const panel = document.getElementById('results-panel');
+        if (cr === 0) { panel.style.display = 'none'; return; }
+        
+        panel.style.display = 'block';
+        const cgpa = pts / cr;
+        document.getElementById('final-cgpa').innerText = cgpa.toFixed(2);
+        document.getElementById('completed-credits').innerText = cr;
+
+        // Calculate Future
+        const remCr = tot - cr;
+        const list = document.getElementById('goals-list');
+        list.innerHTML = '';
+        
+        honorsGoals.forEach(g => {
+            let html = '';
+            if (remCr <= 0) {
+                // Degree Complete
+                html = cgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
+            } else {
+                // Degree In Progress
+                const req = ((g.minCGPA * tot) - pts) / remCr;
+
+                if (req > 4.0) html = '<span class="status-impossible">Non attainable ❌</span>';
+                else if (req <= 0) html = '<span class="status-track">Secured ✅</span>';
+                else if (isFinite(cgpa) && cgpa >= req) html = '<span class="status-track">On Track ✅</span>';
+                else html = `<span class="goal-val">${Math.min(4.0, Math.max(0, req)).toFixed(2)}</span>`;
+            }
+            // Determine upcoming semesters (count of semesters left based on inputs entered)
+            const completedSemesters = semesterData.reduce((c, s, i) => {
+                const el = document.getElementById(`gpa-${i}`);
+                return c + (el && el.value !== '' ? 1 : 0);
+            }, 0);
+            const upcomingSemesters = Math.max(0, semesterData.length - completedSemesters);
+
+            // Build subtext explaining the required average across upcoming semesters
+            let subtext = '';
+            if (remCr <= 0) {
+                subtext = '';
+            } else {
+                const reqAcross = ((g.minCGPA * tot) - pts) / remCr;
+                if (!isFinite(reqAcross)) subtext = '';
+                else if (reqAcross > 4.0) subtext = `In upcoming ${upcomingSemesters} semesters you would need an average ≥ ${reqAcross.toFixed(2)} (Non attainable).`;
+                else if (reqAcross <= 0) subtext = `No additional average required — goal secured.`;
+                else subtext = `In upcoming ${upcomingSemesters} semesters your average should be ≥ ${Math.min(4.0, Math.max(0, reqAcross)).toFixed(2)}.`;
+            }
+
+            const li = document.createElement('li');
+            li.className = 'goal-item';
+            li.innerHTML = `
+                <div>
+                    ${g.name} <small style="color:#64748b">(${g.minCGPA})</small>
+                    ${subtext ? `<div style="color:#64748b; font-size:0.8rem; margin-top:6px;">${subtext}</div>` : ''}
+                </div>
+                <div>${html}</div>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    function resetData() {
+        if(confirm("Are you sure you want to clear everything?")) { 
+            safeStorage.clear(); 
+            location.reload(); 
+        }
+    }
+
+    init();
+</script>
+</body>
+</html>
