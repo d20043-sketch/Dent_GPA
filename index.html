@@ -92,6 +92,8 @@
         /* Footer */
         .btn-reset { display: block; width: 100%; margin-top: 30px; padding: 12px; background: none; border: 1px dashed var(--input-border); color: var(--muted); border-radius: 8px; cursor: pointer; transition: 0.12s; }
         .btn-reset:hover { background: rgba(220,38,38,0.06); color: var(--danger); border-color: var(--danger); }
+        .muted { color: var(--muted); }
+        .muted-small { color: var(--muted); font-size:0.8rem; margin-top:6px; }
     </style>
 </head>
 <body>
@@ -347,8 +349,8 @@
             li.className = 'goal-item';
             li.innerHTML = `
                 <div>
-                    ${g.name} <small style="color:#64748b">(${g.minCGPA})</small>
-                    ${subtext ? `<div style="color:#64748b; font-size:0.8rem; margin-top:6px;">${subtext}</div>` : ''}
+                    ${g.name} <small class="muted">(${g.minCGPA})</small>
+                    ${subtext ? `<div class="muted-small">${subtext}</div>` : ''}
                 </div>
                 <div>${html}</div>
             `;
@@ -438,8 +440,8 @@
             li.className = 'goal-item';
             li.innerHTML = `
                 <div>
-                    ${g.name} <small style="color:#64748b">(${g.minCGPA})</small>
-                    ${subtext ? `<div style="color:#64748b; font-size:0.8rem; margin-top:6px;">${subtext}</div>` : ''}
+                    ${g.name} <small class="muted">(${g.minCGPA})</small>
+                    ${subtext ? `<div class="muted-small">${subtext}</div>` : ''}
                 </div>
                 <div>${html}</div>
             `;
