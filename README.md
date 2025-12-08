@@ -1,7 +1,7 @@
-# Dent_GPA
-# 🎓 CGPA Calculator + Honours Calculator
 
-A privacy-first, offline-capable CGPA Calculator and Goal Planner designed for BDS students of **University of Peradeniya**.
+# 🎓 Dent_GPA - CGPA Calculator + Honours tracker
+
+A simple CGPA Calculator and Honours tracker designed for BDS students of **University of Peradeniya**.
 
 > **Live Demo:** [Click here to use the Calculator](https://d20043-sketch.github.io/Dent_GPA/)
 
@@ -11,7 +11,7 @@ A privacy-first, offline-capable CGPA Calculator and Goal Planner designed for B
 ## 🚀 Key Features
 * **Run Locally:** The application is a single HTML file and runs instantly from any device's local storage—just open the file!
 * **Instant Calculation:** Calculates CGPA in real-time.
-* **Goal Forecasting:** Tells exact average GPA you need in future semesters to achieve a **First Class**, **Second Upper**, etc.
+* **Honours Forecasting:** Tells exact average GPA you need in future semesters to achieve a **First Class**, **Second Upper**, etc.
 * **Smart Dark Mode:** Automatically detects system preferences and remembers your choice.
 * **Privacy Focused:** No database. All data is stored locally on your device.
 * **Mobile First:** Optimised design for usage on smartphones.
