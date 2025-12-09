@@ -15,6 +15,8 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Calculate your BDS CGPA, track academic goals and honours, and simulate future semester grades. for dental students.">
     <title>Dent_GPA</title>
     <style>
         *,
@@ -403,7 +405,7 @@
 
         <div class="privacy-disclaimer">
             <strong>Privacy Notice:</strong> All calculations are performed entirely on your device. Your results are
-            never sent to any server.This tool is for personal use only.
+            never sent to any server. This tool is for personal use only.
         </div>
 
         <div class="context-box">
@@ -708,14 +710,7 @@
             });
         }
 
-        function getInputs() {
-            const d = {};
-            semesterData.forEach((_, i) => {
-                const el = document.getElementById(`gpa-${i}`);
-                if (el) d[i] = el.value;
-            });
-            return d;
-        }
+
 
 
 
