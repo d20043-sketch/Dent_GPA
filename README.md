@@ -39,7 +39,7 @@ To adapt this for your own university:
         // ... update credits here
     ];
     ```
-4.  Update the **Honors Cutoffs**:
+4.  Update the **Honours Cutoffs**:
     ```javascript
     const honorsGoals = [
         { name: "First Class", minCGPA: 3.70 },

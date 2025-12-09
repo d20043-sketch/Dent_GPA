@@ -198,18 +198,23 @@
     }
 
     // --- BANNER ---
+    // Banner should show once per page load. If the user dismisses it,
+    // it stays hidden until the page is reloaded.
+    let bannerDismissedThisLoad = false;
+
     function dismissBanner() {
         const banner = document.getElementById('star-banner');
-        banner.classList.add('hidden');
-        sessionStorage.setItem('banner_shown_this_session', 'true');
+        if (banner) banner.classList.add('hidden');
+        bannerDismissedThisLoad = true;
         haptic(10);
     }
 
     function initBanner() {
-        const alreadyShownThisSession = sessionStorage.getItem('banner_shown_this_session') === 'true';
-        if (alreadyShownThisSession) {
-            document.getElementById('star-banner').classList.add('hidden');
-        }
+        const banner = document.getElementById('star-banner');
+        if (!banner) return;
+        // Ensure banner is visible on each new page load unless already dismissed in this load
+        if (bannerDismissedThisLoad) banner.classList.add('hidden');
+        else banner.classList.remove('hidden');
     }
 
     // --- THEME (dark mode) ---
