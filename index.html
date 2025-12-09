@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SKGZ3KNR14"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SKGZ3KNR14"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-  gtag('config', 'G-SKGZ3KNR14');
-</script>
+        gtag('config', 'G-SKGZ3KNR14');
+    </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dent_GPA</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
         :root {
             --primary: #2563eb;
             --danger: #dc2626;
@@ -36,7 +42,8 @@
         }
 
         /* Dark theme overrides */
-        :root[data-theme="dark"], [data-theme="dark"] {
+        :root[data-theme="dark"],
+        [data-theme="dark"] {
             --bg: #0b1220;
             --card: #07101a;
             --text: #e6eef8;
@@ -46,480 +53,681 @@
             --context-bg: #062033;
             --context-border: #123244;
             --cgpa-bg: #071a2a;
-            --border: rgba(255,255,255,0.04);
-            --dashed-border: rgba(255,255,255,0.06);
+            --border: rgba(255, 255, 255, 0.04);
+            --dashed-border: rgba(255, 255, 255, 0.06);
             --error-bg: #3b0b0b;
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 16px; line-height: 1.5; transition: background-color 220ms linear, color 220ms linear; }
-        .container { position: relative; max-width: 480px; margin: 0 auto; background: var(--card); padding: 24px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); min-height: 300px; transition: background-color 220ms linear, color 220ms linear; }
-        h2 { text-align: center; color: var(--primary); margin-bottom: 12px; margin-top: 0; padding-top: 48px; font-weight: 800; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 16px;
+            line-height: 1.5;
+            transition: background-color 220ms linear, color 220ms linear;
+        }
+
+        .container {
+            position: relative;
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+            min-height: 300px;
+            transition: background-color 220ms linear, color 220ms linear;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 12px;
+            margin-top: 0;
+            padding-top: 48px;
+            font-weight: 800;
+        }
+
         /* Theme toggle */
-        .theme-toggle { position: absolute; right: 24px; top: 24px; background: rgba(255,255,255,0.2); border: 1px solid var(--input-border); color: var(--muted); padding: 6px 12px; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
-        .theme-toggle:hover { background: rgba(37,99,235,0.1); }
-        .theme-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+        .theme-toggle {
+            position: absolute;
+            right: 24px;
+            top: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--input-border);
+            color: var(--muted);
+            padding: 6px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .theme-toggle:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
 
         /* Privacy Disclaimer */
-        .privacy-disclaimer { background: var(--context-bg); padding: 12px 16px; border-radius: 8px; margin-bottom: 24px; text-align: center; border: 1px solid var(--context-border); font-size: 0.85rem; line-height: 1.4; }
-        .privacy-disclaimer strong { color: var(--text); }
+        .privacy-disclaimer {
+            background: var(--context-bg);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            text-align: center;
+            border: 1px solid var(--context-border);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .privacy-disclaimer strong {
+            color: var(--text);
+        }
 
         /* Step 1: Context Box */
-        .context-box { background: var(--context-bg); padding: 20px; border-radius: 12px; margin-bottom: 24px; text-align: center; border: 1px solid var(--context-border); }
-        label { font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 10px; color: var(--text); }
-        select { width: 100%; padding: 12px; font-size: 1rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text); text-align: center; cursor: pointer; -webkit-appearance: none; }
-        
+        .context-box {
+            background: var(--context-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: center;
+            border: 1px solid var(--context-border);
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text);
+            text-align: center;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
         /* Step 2: Inputs */
-        .semester-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .sem-name { font-weight: 600; font-size: 0.95rem; display: block; }
-        .sem-credits { font-size: 0.75rem; color: var(--muted); }
-        
-        input[type="number"] { width: 85px; padding: 10px; border: 1px solid var(--input-border); border-radius: 8px; text-align: center; font-size: 1.1rem; outline: none; transition: 0.12s; background: var(--input-bg); color: var(--text); }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
-        input.error { border-color: var(--danger); background: var(--error-bg); }
-        
+        .semester-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sem-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: block;
+        }
+
+        .sem-credits {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        input[type="number"] {
+            width: 85px;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.12s;
+            background: var(--input-bg);
+            color: var(--text);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
+
+        input.error {
+            border-color: var(--danger);
+            background: var(--error-bg);
+        }
+
         /* Helper Text */
-        .start-hint { text-align: center; color: var(--muted); font-size: 0.9rem; margin-top: 40px; font-style: italic; }
+        .start-hint {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 40px;
+            font-style: italic;
+        }
 
         /* Step 3: Results */
-        .cgpa-box { text-align: center; background: var(--cgpa-bg); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
-        .cgpa-title { font-size: 0.8rem; color: var(--muted); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
-        .cgpa-value { font-size: 3rem; font-weight: 800; color: var(--primary); line-height: 1.1; margin: 5px 0; }
-        
+        .cgpa-box {
+            text-align: center;
+            background: var(--cgpa-bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .cgpa-title {
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .cgpa-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
+            margin: 5px 0;
+        }
+
         /* Goals List */
-        .goals-list { list-style: none; padding: 0; }
-        .goal-item { padding: 12px 0; border-bottom: 1px dashed var(--dashed-border); display: flex; justify-content: space-between; align-items: center; }
-        .status-impossible { color: var(--danger); font-weight: bold; font-size: 0.9rem; }
-        .status-track { color: var(--success); font-weight: bold; font-size: 0.9rem; }
-        .goal-val { font-weight: bold; font-size: 1rem; }
+        .goals-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .goal-item {
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--dashed-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-impossible {
+            color: var(--danger);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .status-track {
+            color: var(--success);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .goal-val {
+            font-weight: bold;
+            font-size: 1rem;
+        }
 
         /* Footer */
-        .btn-reset { display: block; width: 100%; margin-top: 30px; padding: 12px; background: none; border: 1px dashed var(--input-border); color: var(--muted); border-radius: 8px; cursor: pointer; transition: 0.12s; }
-        .btn-reset:hover { background: rgba(220,38,38,0.06); color: var(--danger); border-color: var(--danger); }
-        .muted { color: var(--muted); }
-        .muted-small { color: var(--muted); font-size:0.8rem; margin-top:6px; }
+        .btn-reset {
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            padding: 12px;
+            background: none;
+            border: 1px dashed var(--input-border);
+            color: var(--muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.12s;
+        }
+
+        .btn-reset:hover {
+            background: rgba(220, 38, 38, 0.06);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .muted-small {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
 
         /* Star Banner */
-        .star-banner { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 360px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 14px 16px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: space-between; gap: 12px; animation: slideUp 0.3s ease-out; z-index: 1000; }
-        @keyframes slideUp { from { transform: translateY(120%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .star-banner.hidden { display: none; }
-        .star-banner-text { font-size: 0.9rem; line-height: 1.3; flex: 1; }
-        .star-banner-link { display: inline-block; background: white; color: #2563eb; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.85rem; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-        .star-banner-link:hover { background: rgba(255,255,255,0.9); }
-        .star-banner-close { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .star-banner-close:hover { transform: scale(1.2); }
+        .star-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            max-width: 360px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 14px 16px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            animation: slideUp 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(120%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .star-banner.hidden {
+            display: none;
+        }
+
+        .star-banner-text {
+            font-size: 0.9rem;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .star-banner-link {
+            display: inline-block;
+            background: white;
+            color: #2563eb;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .star-banner-link:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .star-banner-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .star-banner-close:hover {
+            transform: scale(1.2);
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <button id="theme-toggle" class="theme-toggle" aria-pressed="false">🌙 Dark</button>
-    <h2>Dent_GPA</h2>
-    <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0 0 24px 0;">Calculate Your BDS CGPA</p>
-    
-    <div class="privacy-disclaimer">
-        <strong>Privacy Notice:</strong> All calculations are performed entirely on your device. Your results are never sent to any server.This tool is for personal use only.
-    </div>
-    
-    <div class="context-box">
-        <label for="current-sem-select">I am currently in:</label>
-        <select id="current-sem-select">
-            <option value="0" disabled selected>-- Tap to Select --</option>
-            <option value="2">2nd Semester</option>
-            <option value="3">3rd Semester</option>
-            <option value="4">4th Semester</option>
-            <option value="5">5th Semester</option>
-            <option value="6">6th Semester</option>
-            <option value="7">7th Semester</option>
-            <option value="8">8th Semester</option>
-            <option value="9">9th Semester</option>
-            <option value="10">10th Semester</option>
-        </select>
-    </div>
+    <div class="container">
+        <button id="theme-toggle" class="theme-toggle" aria-pressed="false">🌙 Dark</button>
+        <h2>Dent_GPA</h2>
+        <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0 0 24px 0;">Calculate Your BDS
+            CGPA</p>
 
-    <div id="inputs-container">
-        <div class="start-hint" id="start-hint">Select your semester to see your grades...</div>
-    </div>
-
-    <div id="results-panel" style="display:none; margin-top:30px;">
-        <div class="cgpa-box">
-            <div class="cgpa-title">Current CGPA</div>
-            <div class="cgpa-value" id="final-cgpa">0.00</div>
-            <div style="font-size:0.8rem; color:#64748b;">Credits Attempted: <span id="completed-credits">0</span></div>
+        <div class="privacy-disclaimer">
+            <strong>Privacy Notice:</strong> All calculations are performed entirely on your device. Your results are
+            never sent to any server.This tool is for personal use only.
         </div>
 
-        <h3 style="font-size:1rem; margin-top:20px; color:#334155; border-bottom: 2px solid #f1f5f9; padding-bottom:10px;">CGPA summary:</h3>
-        <ul id="goals-list" class="goals-list"></ul>
+        <div class="context-box">
+            <label for="current-sem-select">I am currently in:</label>
+            <select id="current-sem-select">
+                <option value="0" disabled selected>-- Tap to Select --</option>
+                <option value="2">2nd Semester</option>
+                <option value="3">3rd Semester</option>
+                <option value="4">4th Semester</option>
+                <option value="5">5th Semester</option>
+                <option value="6">6th Semester</option>
+                <option value="7">7th Semester</option>
+                <option value="8">8th Semester</option>
+                <option value="9">9th Semester</option>
+                <option value="10">10th Semester</option>
+            </select>
+        </div>
+
+        <div id="inputs-container">
+            <div class="start-hint" id="start-hint">Select your semester to see your grades...</div>
+        </div>
+
+        <div id="results-panel" style="display:none; margin-top:30px;">
+            <div class="cgpa-box">
+                <div class="cgpa-title">Current CGPA</div>
+                <div class="cgpa-value" id="final-cgpa">0.00</div>
+                <div style="font-size:0.8rem; color:#64748b;">Credits Attempted: <span id="completed-credits">0</span>
+                </div>
+            </div>
+
+            <h3
+                style="font-size:1rem; margin-top:20px; color:#334155; border-bottom: 2px solid #f1f5f9; padding-bottom:10px;">
+                CGPA summary:</h3>
+            <ul id="goals-list" class="goals-list"></ul>
+        </div>
+
+        <button class="btn-reset" id="reset-btn">Clear Data</button>
     </div>
 
-    <button class="btn-reset" id="reset-btn">Clear Data</button>
-</div>
+    <div class="star-banner" id="star-banner">
+        <div class="star-banner-text">⭐ If this tool helped you, please consider giving it a star on GitHub!</div>
+        <a href="https://github.com/d20043-sketch/Dent_GPA" class="star-banner-link" target="_blank"
+            onclick="haptic(15);">Star on GitHub</a>
+        <button class="star-banner-close" id="banner-close" aria-label="Dismiss" onclick="dismissBanner();">✕</button>
+    </div>
 
-<div class="star-banner" id="star-banner">
-    <div class="star-banner-text">⭐ If this tool helped you, please consider giving it a star on GitHub!</div>
-    <a href="https://github.com/d20043-sketch/Dent_GPA" class="star-banner-link" target="_blank" onclick="haptic(15);">Star on GitHub</a>
-    <button class="star-banner-close" id="banner-close" aria-label="Dismiss" onclick="dismissBanner();">✕</button>
-</div>
+    <script>
+        // --- DATA ---
+        const semesterData = [
+            { id: 1, name: "1st Semester", credits: 14 },
+            { id: 2, name: "2nd Semester", credits: 15 },
+            { id: 3, name: "3rd Semester", credits: 17 },
+            { id: 4, name: "4th Semester", credits: 15 },
+            { id: 5, name: "5th Semester", credits: 14 },
+            { id: 6, name: "6th Semester", credits: 16 },
+            { id: 7, name: "7th Semester", credits: 18 },
+            { id: 8, name: "8th Semester", credits: 16 },
+            { id: 9, name: "9th Semester", credits: 17 },
+            { id: 10, name: "10th Semester", credits: 18 }
+        ];
 
-<script>
-    // --- DATA ---
-    const semesterData = [
-        { id: 1, name: "1st Semester", credits: 14 },
-        { id: 2, name: "2nd Semester", credits: 15 },
-        { id: 3, name: "3rd Semester", credits: 17 },
-        { id: 4, name: "4th Semester", credits: 15 },
-        { id: 5, name: "5th Semester", credits: 14 },
-        { id: 6, name: "6th Semester", credits: 16 },
-        { id: 7, name: "7th Semester", credits: 18 },
-        { id: 8, name: "8th Semester", credits: 16 },
-        { id: 9, name: "9th Semester", credits: 17 },
-        { id: 10, name: "10th Semester", credits: 18 }
-    ];
+        const honorsGoals = [
+            { name: "First Class", minCGPA: 3.70 },
+            { name: "Second Upper", minCGPA: 3.30 },
+            { name: "Second Lower", minCGPA: 3.00 }
+        ];
 
-    const honorsGoals = [
-        { name: "First Class", minCGPA: 3.70 },
-        { name: "Second Upper", minCGPA: 3.30 },
-        { name: "Second Lower", minCGPA: 3.00 }
-    ];
+        // --- STORAGE ---
+        const safeStorage = {
+            setItem: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { } },
+            getItem: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+            clear: function () { try { localStorage.clear(); } catch (e) { } }
+        };
 
-    // --- STORAGE ---
-    const safeStorage = {
-        setItem: function(k, v) { try { localStorage.setItem(k, v); } catch(e) {} },
-        getItem: function(k) { try { return localStorage.getItem(k); } catch(e) { return null; } },
-        clear: function() { try { localStorage.clear(); } catch(e) {} }
-    };
-
-    // --- HAPTIC FEEDBACK ---
-    function haptic(duration = 10) {
-        if (navigator.vibrate) {
-            navigator.vibrate(duration);
-        }
-    }
-
-    // --- BANNER ---
-    // Banner should show once per page load. If the user dismisses it,
-    // it stays hidden until the page is reloaded.
-    let bannerDismissedThisLoad = false;
-
-    function dismissBanner() {
-        const banner = document.getElementById('star-banner');
-        if (banner) banner.classList.add('hidden');
-        bannerDismissedThisLoad = true;
-        haptic(10);
-    }
-
-    function initBanner() {
-        const banner = document.getElementById('star-banner');
-        if (!banner) return;
-        // Ensure banner is visible on each new page load unless already dismissed in this load
-        if (bannerDismissedThisLoad) banner.classList.add('hidden');
-        else banner.classList.remove('hidden');
-    }
-
-    // --- THEME (dark mode) ---
-    function applyTheme(theme) {
-        const btn = document.getElementById('theme-toggle');
-        if (theme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            if (btn) { btn.innerText = '☀️ Light'; btn.setAttribute('aria-pressed','true'); }
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-            if (btn) { btn.innerText = '🌙 Dark'; btn.setAttribute('aria-pressed','false'); }
-        }
-        safeStorage.setItem('theme', theme);
-    }
-
-    function initTheme() {
-        const saved = safeStorage.getItem('theme');
-        let theme = 'light';
-        if (saved === 'dark' || saved === 'light') theme = saved;
-        else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
-        applyTheme(theme);
-
-        // Attach toggle
-        const btn = document.getElementById('theme-toggle');
-        if (btn) btn.addEventListener('click', () => {
-            haptic();
-            const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-            applyTheme(current === 'dark' ? 'light' : 'dark');
-        });
-    }
-
-
-    // --- LOGIC ---
-    const container = document.getElementById('inputs-container');
-    const selectBox = document.getElementById('current-sem-select');
-    const resetBtn = document.getElementById('reset-btn');
-
-    function init() {
-        initTheme();
-        initBanner();
-        const saved = safeStorage.getItem('userCurrentSem');
-        // Restore if valid and >= 2 (app starts at 2nd semester)
-        if (saved && Number(saved) >= 2) {
-            selectBox.value = saved;
-            updateUI();
-        }
-
-        // Attach UI listeners
-        selectBox.addEventListener('change', () => {
-            haptic();
-            updateUI();
-        });
-
-        resetBtn.addEventListener('click', () => {
-            haptic(20);
-            resetData();
-        });
-    }
-
-    function updateUI() {
-        const level = parseInt(selectBox.value);
-        if (isNaN(level) || level === 0) return;
-
-        safeStorage.setItem('userCurrentSem', level);
-
-        container.innerHTML = '';
-
-        semesterData.forEach((sem, idx) => {
-            // Show all semesters UP TO the current one
-            if (idx < level) {
-                const row = document.createElement('div');
-                row.className = 'semester-row';
-
-                const info = document.createElement('div');
-                const name = document.createElement('span');
-                name.className = 'sem-name';
-                name.textContent = (idx + 1) === level ? `${sem.name} (Current)` : sem.name;
-
-                const credits = document.createElement('span');
-                credits.className = 'sem-credits';
-                credits.textContent = `${sem.credits} Credits`;
-
-                info.appendChild(name);
-                info.appendChild(credits);
-
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.id = `gpa-${idx}`;
-                input.step = '0.01';
-                input.min = '0';
-                input.max = '4.0';
-                input.placeholder = '-';
-                input.inputMode = 'decimal';
-
-                // Restore stored value if present
-                const stored = safeStorage.getItem(`gpa_sem_${idx}`);
-                if (stored) input.value = stored;
-
-                // Attach listener
-                input.addEventListener('input', () => {
-                    haptic(5);
-                    handleInput(input, idx);
-                });
-
-                row.appendChild(info);
-                row.appendChild(input);
-
-                container.appendChild(row);
+        // --- HAPTIC FEEDBACK ---
+        function haptic(duration = 10) {
+            if (navigator.vibrate) {
+                navigator.vibrate(duration);
             }
-        });
-
-        // Initial calculation after rebuilding inputs
-        recalc();
-    }
-
-    function handleInput(input, idx) {
-        const v = parseFloat(input.value);
-        if (!Number.isFinite(v) || v < 0 || v > 4.0) {
-            input.classList.add('error');
-        } else {
-            input.classList.remove('error');
-            safeStorage.setItem(`gpa_sem_${idx}`, input.value);
         }
-        recalc();
-    }
 
-    function recalc() {
-        let pts = 0, cr = 0, tot = 0;
-        // Total Credits for Degree
-        semesterData.forEach(s => tot += s.credits);
+        // --- BANNER ---
+        // Banner should show once per page load. If the user dismisses it,
+        // it stays hidden until the page is reloaded.
+        let bannerDismissedThisLoad = false;
 
-        // Calculate Current
-        semesterData.forEach((sem, i) => {
-            const el = document.getElementById(`gpa-${i}`);
-            if (el && el.value !== "") {
-                const v = parseFloat(el.value);
-                if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
-                    pts += (v * sem.credits);
-                    cr += sem.credits;
+        function dismissBanner() {
+            const banner = document.getElementById('star-banner');
+            if (banner) banner.classList.add('hidden');
+            bannerDismissedThisLoad = true;
+            haptic(10);
+        }
+
+        function initBanner() {
+            const banner = document.getElementById('star-banner');
+            if (!banner) return;
+            // Ensure banner is visible on each new page load unless already dismissed in this load
+            if (bannerDismissedThisLoad) banner.classList.add('hidden');
+            else banner.classList.remove('hidden');
+        }
+
+        // --- THEME (dark mode) ---
+        function applyTheme(theme) {
+            const btn = document.getElementById('theme-toggle');
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                if (btn) { btn.innerText = '☀️ Light'; btn.setAttribute('aria-pressed', 'true'); }
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                if (btn) { btn.innerText = '🌙 Dark'; btn.setAttribute('aria-pressed', 'false'); }
+            }
+            safeStorage.setItem('theme', theme);
+        }
+
+        function initTheme() {
+            const saved = safeStorage.getItem('theme');
+            let theme = 'light';
+            if (saved === 'dark' || saved === 'light') theme = saved;
+            else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
+            applyTheme(theme);
+
+            // Attach toggle
+            const btn = document.getElementById('theme-toggle');
+            if (btn) btn.addEventListener('click', () => {
+                haptic();
+                const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                applyTheme(current === 'dark' ? 'light' : 'dark');
+            });
+        }
+
+
+        // --- LOGIC ---
+        const container = document.getElementById('inputs-container');
+        const selectBox = document.getElementById('current-sem-select');
+        const resetBtn = document.getElementById('reset-btn');
+
+        function init() {
+            initTheme();
+            initBanner();
+            const saved = safeStorage.getItem('userCurrentSem');
+            // Restore if valid and >= 2 (app starts at 2nd semester)
+            if (saved && Number(saved) >= 2) {
+                selectBox.value = saved;
+                updateUI();
+            }
+
+            // Attach UI listeners
+            selectBox.addEventListener('change', () => {
+                haptic();
+                updateUI();
+            });
+
+            resetBtn.addEventListener('click', () => {
+                haptic(20);
+                resetData();
+            });
+        }
+
+        function updateUI() {
+            const level = parseInt(selectBox.value);
+            if (isNaN(level) || level === 0) return;
+
+            safeStorage.setItem('userCurrentSem', level);
+
+            container.innerHTML = '';
+
+            semesterData.forEach((sem, idx) => {
+                // Show all semesters UP TO the current one
+                if (idx < level) {
+                    const row = document.createElement('div');
+                    row.className = 'semester-row';
+
+                    const info = document.createElement('div');
+                    const name = document.createElement('span');
+                    name.className = 'sem-name';
+                    name.textContent = (idx + 1) === level ? `${sem.name} (Current)` : sem.name;
+
+                    const credits = document.createElement('span');
+                    credits.className = 'sem-credits';
+                    credits.textContent = `${sem.credits} Credits`;
+
+                    info.appendChild(name);
+                    info.appendChild(credits);
+
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.id = `gpa-${idx}`;
+                    input.step = '0.01';
+                    input.min = '0';
+                    input.max = '4.0';
+                    input.placeholder = '-';
+                    input.inputMode = 'decimal';
+
+                    // Restore stored value if present
+                    const stored = safeStorage.getItem(`gpa_sem_${idx}`);
+                    if (stored) input.value = stored;
+
+                    // Attach listener
+                    input.addEventListener('input', () => {
+                        haptic(5);
+                        handleInput(input, idx);
+                    });
+
+                    row.appendChild(info);
+                    row.appendChild(input);
+
+                    container.appendChild(row);
                 }
-            }
-        });
+            });
 
-        const panel = document.getElementById('results-panel');
-        if (cr === 0) { panel.style.display = 'none'; return; }
+            // Initial calculation after rebuilding inputs
+            recalc();
+        }
 
-        panel.style.display = 'block';
-        const cgpa = pts / cr;
-        const cgpaEl = document.getElementById('final-cgpa');
-        cgpaEl.innerText = isFinite(cgpa) ? cgpa.toFixed(2) : '0.00';
-        document.getElementById('completed-credits').innerText = cr;
-
-        // Calculate Future
-        const remCr = tot - cr;
-        const list = document.getElementById('goals-list');
-        list.innerHTML = '';
-
-        honorsGoals.forEach(g => {
-            let html = '';
-            if (remCr <= 0) {
-                // Degree Complete
-                html = cgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
+        function handleInput(input, idx) {
+            const v = parseFloat(input.value);
+            if (!Number.isFinite(v) || v < 0 || v > 4.0) {
+                input.classList.add('error');
             } else {
-                // Degree In Progress
-                const reqRaw = ((g.minCGPA * tot) - pts) / remCr;
-                const req = reqRaw;
-
-                if (req > 4.0) html = '<span class="status-impossible">Non attainable ❌</span>';
-                else if (req <= 0) html = '<span class="status-track">Secured ✅</span>';
-                else if (isFinite(cgpa) && cgpa >= req) html = '<span class="status-track">On Track ✅</span>';
-                else html = `<span class="goal-val">${Math.min(4.0, Math.max(0, req)).toFixed(2)}</span>`;
+                input.classList.remove('error');
+                safeStorage.setItem(`gpa_sem_${idx}`, input.value);
             }
+            recalc();
+        }
 
-            // Determine upcoming semesters (count of semesters left based on inputs entered)
-            const completedSemesters = semesterData.reduce((c, s, i) => {
+        function recalc() {
+            let pts = 0, cr = 0, tot = 0;
+            // Total Credits for Degree
+            semesterData.forEach(s => tot += s.credits);
+
+            // Calculate Current
+            semesterData.forEach((sem, i) => {
                 const el = document.getElementById(`gpa-${i}`);
-                return c + (el && el.value !== '' ? 1 : 0);
-            }, 0);
-            const upcomingSemesters = Math.max(0, semesterData.length - completedSemesters);
+                if (el && el.value !== "") {
+                    const v = parseFloat(el.value);
+                    if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
+                        pts += (v * sem.credits);
+                        cr += sem.credits;
+                    }
+                }
+            });
 
-            // Build subtext explaining the required average across upcoming semesters
-            let subtext = '';
-            if (remCr <= 0) {
-                subtext = '';
-            } else {
-                const reqAcross = ((g.minCGPA * tot) - pts) / remCr;
-                if (!isFinite(reqAcross)) subtext = '';
-                else if (reqAcross > 4.0) subtext = `In upcoming ${upcomingSemesters} semesters you would need an average ≥ ${reqAcross.toFixed(2)} (Non attainable).`;
-                else if (reqAcross <= 0) subtext = `No additional average required — goal secured.`;
-                else subtext = `In upcoming ${upcomingSemesters} semesters your average should be ≥ ${Math.min(4.0, Math.max(0, reqAcross)).toFixed(2)}.`;
-            }
+            const panel = document.getElementById('results-panel');
+            if (cr === 0) { panel.style.display = 'none'; return; }
 
-            const li = document.createElement('li');
-            li.className = 'goal-item';
-            li.innerHTML = `
+            panel.style.display = 'block';
+            const cgpa = pts / cr;
+            const cgpaEl = document.getElementById('final-cgpa');
+            cgpaEl.innerText = isFinite(cgpa) ? cgpa.toFixed(2) : '0.00';
+            document.getElementById('completed-credits').innerText = cr;
+
+            // Calculate Future
+            const remCr = tot - cr;
+            const list = document.getElementById('goals-list');
+            list.innerHTML = '';
+
+            honorsGoals.forEach(g => {
+                let html = '';
+                if (remCr <= 0) {
+                    // Degree Complete
+                    html = cgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
+                } else {
+                    // Degree In Progress
+                    const reqRaw = ((g.minCGPA * tot) - pts) / remCr;
+                    const req = reqRaw;
+
+                    if (req > 4.0) html = '<span class="status-impossible">Non attainable ❌</span>';
+                    else if (req <= 0) html = '<span class="status-track">Secured ✅</span>';
+                    else if (isFinite(cgpa) && cgpa >= req) html = '<span class="status-track">On Track ✅</span>';
+                    else html = `<span class="goal-val">${Math.min(4.0, Math.max(0, req)).toFixed(2)}</span>`;
+                }
+
+                // Determine upcoming semesters (count of semesters left based on inputs entered)
+                const completedSemesters = semesterData.reduce((c, s, i) => {
+                    const el = document.getElementById(`gpa-${i}`);
+                    return c + (el && el.value !== '' ? 1 : 0);
+                }, 0);
+                const upcomingSemesters = Math.max(0, semesterData.length - completedSemesters);
+
+                // Build subtext explaining the required average across upcoming semesters
+                let subtext = '';
+                if (remCr <= 0) {
+                    subtext = '';
+                } else {
+                    const reqAcross = ((g.minCGPA * tot) - pts) / remCr;
+                    if (!isFinite(reqAcross)) subtext = '';
+                    else if (reqAcross > 4.0) subtext = `In upcoming ${upcomingSemesters} semesters you would need an average ≥ ${reqAcross.toFixed(2)} (Non attainable).`;
+                    else if (reqAcross <= 0) subtext = `No additional average required — goal secured.`;
+                    else subtext = `In upcoming ${upcomingSemesters} semesters your average should be ≥ ${Math.min(4.0, Math.max(0, reqAcross)).toFixed(2)}.`;
+                }
+
+                const li = document.createElement('li');
+                li.className = 'goal-item';
+                li.innerHTML = `
                 <div>
                     ${g.name} <small class="muted">(${g.minCGPA})</small>
                     ${subtext ? `<div class="muted-small">${subtext}</div>` : ''}
                 </div>
                 <div>${html}</div>
             `;
-            list.appendChild(li);
-        });
-    }
-
-    function getInputs() {
-        const d = {};
-        semesterData.forEach((_, i) => {
-            const el = document.getElementById(`gpa-${i}`);
-            if (el) d[i] = el.value;
-        });
-        return d;
-    }
-
-    function calc(input, idx) {
-        if (input) {
-            let val = parseFloat(input.value);
-            if (val > 4.0) input.classList.add('error');
-            else { 
-                input.classList.remove('error'); 
-                safeStorage.setItem(`gpa_sem_${idx}`, input.value); 
-            }
+                list.appendChild(li);
+            });
         }
-        
-        let pts = 0, cr = 0, tot = 0;
-        // Total Credits for Degree
-        semesterData.forEach(s => tot += s.credits);
 
-        // Calculate Current
-        semesterData.forEach((sem, i) => {
-            const el = document.getElementById(`gpa-${i}`);
-            if (el && el.value !== "" && !isNaN(el.value) && el.value <= 4.0) {
-                pts += (parseFloat(el.value) * sem.credits);
-                cr += sem.credits;
-            }
-        });
-
-        const panel = document.getElementById('results-panel');
-        if (cr === 0) { panel.style.display = 'none'; return; }
-        
-        panel.style.display = 'block';
-        const cgpa = pts / cr;
-        document.getElementById('final-cgpa').innerText = cgpa.toFixed(2);
-        document.getElementById('completed-credits').innerText = cr;
-
-        // Calculate Future
-        const remCr = tot - cr;
-        const list = document.getElementById('goals-list');
-        list.innerHTML = '';
-        
-        honorsGoals.forEach(g => {
-            let html = '';
-            if (remCr <= 0) {
-                // Degree Complete
-                html = cgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
-            } else {
-                // Degree In Progress
-                const req = ((g.minCGPA * tot) - pts) / remCr;
-
-                if (req > 4.0) html = '<span class="status-impossible">Non attainable ❌</span>';
-                else if (req <= 0) html = '<span class="status-track">Secured ✅</span>';
-                else if (isFinite(cgpa) && cgpa >= req) html = '<span class="status-track">On Track ✅</span>';
-                else html = `<span class="goal-val">${Math.min(4.0, Math.max(0, req)).toFixed(2)}</span>`;
-            }
-            // Determine upcoming semesters (count of semesters left based on inputs entered)
-            const completedSemesters = semesterData.reduce((c, s, i) => {
+        function getInputs() {
+            const d = {};
+            semesterData.forEach((_, i) => {
                 const el = document.getElementById(`gpa-${i}`);
-                return c + (el && el.value !== '' ? 1 : 0);
-            }, 0);
-            const upcomingSemesters = Math.max(0, semesterData.length - completedSemesters);
-
-            // Build subtext explaining the required average across upcoming semesters
-            let subtext = '';
-            if (remCr <= 0) {
-                subtext = '';
-            } else {
-                const reqAcross = ((g.minCGPA * tot) - pts) / remCr;
-                if (!isFinite(reqAcross)) subtext = '';
-                else if (reqAcross > 4.0) subtext = `In upcoming ${upcomingSemesters} semesters you would need an average ≥ ${reqAcross.toFixed(2)} (Non attainable).`;
-                else if (reqAcross <= 0) subtext = `No additional average required — goal secured.`;
-                else subtext = `In upcoming ${upcomingSemesters} semesters your average should be ≥ ${Math.min(4.0, Math.max(0, reqAcross)).toFixed(2)}.`;
-            }
-
-            const li = document.createElement('li');
-            li.className = 'goal-item';
-            li.innerHTML = `
-                <div>
-                    ${g.name} <small class="muted">(${g.minCGPA})</small>
-                    ${subtext ? `<div class="muted-small">${subtext}</div>` : ''}
-                </div>
-                <div>${html}</div>
-            `;
-            list.appendChild(li);
-        });
-    }
-
-    function resetData() {
-        if(confirm("Are you sure you want to clear everything?")) { 
-            safeStorage.clear(); 
-            location.reload(); 
+                if (el) d[i] = el.value;
+            });
+            return d;
         }
-    }
 
-    init();
-</script>
+
+
+        function resetData() {
+            if (confirm("Are you sure you want to clear everything?")) {
+                safeStorage.clear();
+                location.reload();
+            }
+        }
+
+        init();
+    </script>
 </body>
 
 </html>
