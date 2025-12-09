@@ -174,6 +174,13 @@
         clear: function() { try { localStorage.clear(); } catch(e) {} }
     };
 
+    // --- HAPTIC FEEDBACK ---
+    function haptic(duration = 10) {
+        if (navigator.vibrate) {
+            navigator.vibrate(duration);
+        }
+    }
+
     // --- THEME (dark mode) ---
     function applyTheme(theme) {
         const btn = document.getElementById('theme-toggle');
@@ -197,6 +204,7 @@
         // Attach toggle
         const btn = document.getElementById('theme-toggle');
         if (btn) btn.addEventListener('click', () => {
+            haptic();
             const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
             applyTheme(current === 'dark' ? 'light' : 'dark');
         });
@@ -219,10 +227,14 @@
 
         // Attach UI listeners
         selectBox.addEventListener('change', () => {
+            haptic();
             updateUI();
         });
 
-        resetBtn.addEventListener('click', resetData);
+        resetBtn.addEventListener('click', () => {
+            haptic(20);
+            resetData();
+        });
     }
 
     function updateUI() {
@@ -265,7 +277,10 @@
                 if (stored) input.value = stored;
 
                 // Attach listener
-                input.addEventListener('input', () => handleInput(input, idx));
+                input.addEventListener('input', () => {
+                    haptic(5);
+                    handleInput(input, idx);
+                });
 
                 row.appendChild(info);
                 row.appendChild(input);
