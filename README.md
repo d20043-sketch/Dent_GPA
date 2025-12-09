@@ -22,7 +22,7 @@ A simple CGPA Calculator and Honours tracker designed for BDS students of **Univ
 2.  **Input Semester GPA:** Enter the GPA for your completed semesters.
 3.  **View Forecast:** The app calculates your current standing and projects the required average for remaining semesters.
     * ✅ **On Track:** You are safe to maintain current performance.
-    * ❌ **Non attainable:** The goal is mathematically unreachable (requires > 4.0).
+    * ❌ **Unattainable:** The goal is mathematically unreachable (requires > 4.0).
 
 ## ⚙️ Configuration (For Developers)
 
@@ -31,7 +31,7 @@ This project is built as a **Single Page Application (SPA)** using vanilla HTML,
 To adapt this for your own university:
 
 1.  Open `index.html`.
-2.  Locate the `CONFIGURATION` section in the JavaScript.
+2.  Locate the `// --- DATA ---` section in the JavaScript (around line 462).
 3.  Update the **Credit Map**:
     ```javascript
     const semesterData = [
