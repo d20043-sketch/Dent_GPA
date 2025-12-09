@@ -161,6 +161,7 @@
             text-align: center;
             cursor: pointer;
             -webkit-appearance: none;
+            appearance: none;
         }
 
         /* Step 2: Inputs */
@@ -397,53 +398,58 @@
 
 <body>
 
-    <div class="container">
-        <button id="theme-toggle" class="theme-toggle" aria-pressed="false">🌙 Dark</button>
-        <h2>Dent_GPA</h2>
-        <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0 0 24px 0;">Calculate Your BDS
-            CGPA</p>
+    <main>
+        <div class="container">
+            <button id="theme-toggle" class="theme-toggle" aria-pressed="false">🌙 Dark</button>
+            <h2>Dent_GPA</h2>
+            <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0 0 24px 0;">Calculate Your
+                BDS
+                CGPA</p>
 
-        <div class="privacy-disclaimer">
-            <strong>Privacy Notice:</strong> All calculations are performed entirely on your device. Your results are
-            never sent to any server. This tool is for personal use only.
-        </div>
-
-        <div class="context-box">
-            <label for="current-sem-select">I am currently in:</label>
-            <select id="current-sem-select">
-                <option value="0" disabled selected>-- Tap to Select --</option>
-                <option value="2">2nd Semester</option>
-                <option value="3">3rd Semester</option>
-                <option value="4">4th Semester</option>
-                <option value="5">5th Semester</option>
-                <option value="6">6th Semester</option>
-                <option value="7">7th Semester</option>
-                <option value="8">8th Semester</option>
-                <option value="9">9th Semester</option>
-                <option value="10">10th Semester</option>
-            </select>
-        </div>
-
-        <div id="inputs-container">
-            <div class="start-hint" id="start-hint">Select your semester to see your grades...</div>
-        </div>
-
-        <div id="results-panel" style="display:none; margin-top:30px;">
-            <div class="cgpa-box">
-                <div class="cgpa-title">Current CGPA</div>
-                <div class="cgpa-value" id="final-cgpa">0.00</div>
-                <div style="font-size:0.8rem; color:#64748b;">Credits Attempted: <span id="completed-credits">0</span>
-                </div>
+            <div class="privacy-disclaimer">
+                <strong>Privacy Notice:</strong> All calculations are performed entirely on your device. Your results
+                are
+                never sent to any server. This tool is for personal use only.
             </div>
 
-            <h3
-                style="font-size:1rem; margin-top:20px; color:#334155; border-bottom: 2px solid #f1f5f9; padding-bottom:10px;">
-                CGPA summary:</h3>
-            <ul id="goals-list" class="goals-list"></ul>
-        </div>
+            <div class="context-box">
+                <label for="current-sem-select">I am currently in:</label>
+                <select id="current-sem-select">
+                    <option value="0" disabled selected>-- Tap to Select --</option>
+                    <option value="2">2nd Semester</option>
+                    <option value="3">3rd Semester</option>
+                    <option value="4">4th Semester</option>
+                    <option value="5">5th Semester</option>
+                    <option value="6">6th Semester</option>
+                    <option value="7">7th Semester</option>
+                    <option value="8">8th Semester</option>
+                    <option value="9">9th Semester</option>
+                    <option value="10">10th Semester</option>
+                </select>
+            </div>
 
-        <button class="btn-reset" id="reset-btn">Clear Data</button>
-    </div>
+            <div id="inputs-container">
+                <div class="start-hint" id="start-hint">Select your semester to see your grades...</div>
+            </div>
+
+            <div id="results-panel" style="display:none; margin-top:30px;">
+                <div class="cgpa-box">
+                    <div class="cgpa-title">Current CGPA</div>
+                    <div class="cgpa-value" id="final-cgpa">0.00</div>
+                    <div style="font-size:0.8rem; color:var(--muted);">Credits Attempted: <span
+                            id="completed-credits">0</span>
+                    </div>
+                </div>
+
+                <h3
+                    style="font-size:1rem; margin-top:20px; color:var(--text); border-bottom: 2px solid var(--border); padding-bottom:10px;">
+                    CGPA summary:</h3>
+                <ul id="goals-list" class="goals-list"></ul>
+            </div>
+
+            <button class="btn-reset" id="reset-btn">Clear Data</button>
+        </div>
+    </main>
 
     <div class="star-banner" id="star-banner">
         <div class="star-banner-text">⭐ If this tool helped you, please consider giving it a star on GitHub!</div>
