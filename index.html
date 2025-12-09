@@ -99,6 +99,16 @@
         .btn-reset:hover { background: rgba(220,38,38,0.06); color: var(--danger); border-color: var(--danger); }
         .muted { color: var(--muted); }
         .muted-small { color: var(--muted); font-size:0.8rem; margin-top:6px; }
+
+        /* Star Banner */
+        .star-banner { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 360px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 14px 16px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: space-between; gap: 12px; animation: slideUp 0.3s ease-out; z-index: 1000; }
+        @keyframes slideUp { from { transform: translateY(120%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .star-banner.hidden { display: none; }
+        .star-banner-text { font-size: 0.9rem; line-height: 1.3; flex: 1; }
+        .star-banner-link { display: inline-block; background: white; color: #2563eb; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.85rem; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .star-banner-link:hover { background: rgba(255,255,255,0.9); }
+        .star-banner-close { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .star-banner-close:hover { transform: scale(1.2); }
     </style>
 </head>
 <body>
@@ -146,6 +156,12 @@
     <button class="btn-reset" id="reset-btn">Clear Data</button>
 </div>
 
+<div class="star-banner" id="star-banner">
+    <div class="star-banner-text">⭐ If this tool helped, please consider giving it a star on GitHub!</div>
+    <a href="https://github.com/d20043-sketch/Dent_GPA" class="star-banner-link" target="_blank" onclick="haptic(15);">Star on GitHub</a>
+    <button class="star-banner-close" id="banner-close" aria-label="Dismiss" onclick="dismissBanner();">✕</button>
+</div>
+
 <script>
     // --- DATA ---
     const semesterData = [
@@ -178,6 +194,21 @@
     function haptic(duration = 10) {
         if (navigator.vibrate) {
             navigator.vibrate(duration);
+        }
+    }
+
+    // --- BANNER ---
+    function dismissBanner() {
+        const banner = document.getElementById('star-banner');
+        banner.classList.add('hidden');
+        sessionStorage.setItem('banner_shown_this_session', 'true');
+        haptic(10);
+    }
+
+    function initBanner() {
+        const alreadyShownThisSession = sessionStorage.getItem('banner_shown_this_session') === 'true';
+        if (alreadyShownThisSession) {
+            document.getElementById('star-banner').classList.add('hidden');
         }
     }
 
@@ -218,6 +249,7 @@
 
     function init() {
         initTheme();
+        initBanner();
         const saved = safeStorage.getItem('userCurrentSem');
         // Restore if valid and >= 2 (app starts at 2nd semester)
         if (saved && Number(saved) >= 2) {
