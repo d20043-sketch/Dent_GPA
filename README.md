@@ -50,8 +50,8 @@ To adapt this for your own university:
 ## 💻 Tech Stack
 
 * **Frontend:** HTML5, CSS3 and JavaScript 
-* **Icons:** Inline SVGs (No external requests).
-* **Fonts:** Google Fonts (Inter).
+* **Icons:** Unicode emojis
+
 
 ## 🏃‍♂️ Running Locally
 
