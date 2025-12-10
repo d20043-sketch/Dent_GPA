@@ -13,9 +13,9 @@
         gtag('config', 'G-SKGZ3KNR14');
     </script>
 
-   
+
     <meta charset="UTF-8">
-     <meta name="google-site-verification" content="X9oORb8LFYD38B4c7vNz9HDdK1guR19knfI-kO1xUZU" />
+    <meta name="google-site-verification" content="X9oORb8LFYD38B4c7vNz9HDdK1guR19knfI-kO1xUZU" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
         content="Calculate your BDS CGPA, track academic goals and honours, and simulate future semester grades. for dental students.">
@@ -224,18 +224,6 @@
 
         input.valid:focus {
             box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.08);
-        }
-
-        .prediction-label {
-            display: inline-block;
-            background-color: var(--context-bg);
-            color: var(--primary);
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 6px;
-            border: 1px solid var(--context-border);
-            vertical-align: middle;
         }
 
         input.error {
@@ -550,25 +538,23 @@
             </div>
 
             <div class="context-box">
-                <label for="current-sem-select">I am currently in:</label>
+                <label for="current-sem-select">Semesters you have completed:</label>
                 <select id="current-sem-select">
                     <option value="0" disabled selected>-- Tap to Select --</option>
-                    <option value="1">1st Semester</option>
-                    <option value="2">2nd Semester</option>
-                    <option value="3">3rd Semester</option>
-                    <option value="4">4th Semester</option>
-                    <option value="5">5th Semester</option>
-                    <option value="6">6th Semester</option>
-                    <option value="7">7th Semester</option>
-                    <option value="8">8th Semester</option>
-                    <option value="9">9th Semester</option>
-                    <option value="10">10th Semester</option>
+                    <option value="1">1 Semester</option>
+                    <option value="2">2 Semesters</option>
+                    <option value="3">3 Semesters</option>
+                    <option value="4">4 Semesters</option>
+                    <option value="5">5 Semesters</option>
+                    <option value="6">6 Semesters</option>
+                    <option value="7">7 Semesters</option>
+                    <option value="8">8 Semesters</option>
+                    <option value="9">9 Semesters</option>
+                    <option value="10">10 Semesters</option>
                 </select>
             </div>
 
-            <div id="inputs-container">
-                <div class="start-hint" id="start-hint">Select your semester to input your GPA...</div>
-            </div>
+            <div id="semester-inputs"></div>
 
             <div id="results-panel" style="display:none; margin-top:30px;">
                 <!-- Progress Indicator -->
@@ -703,7 +689,7 @@
 
 
         // --- LOGIC ---
-        const container = document.getElementById('inputs-container');
+        const container = document.getElementById('semester-inputs');
         const selectBox = document.getElementById('current-sem-select');
         const resetBtn = document.getElementById('reset-btn');
 
@@ -809,10 +795,9 @@
             recalc();
         }
 
-        // NEW: Only toggles visibility, doesn't destroy DOM
+        // Show inputs for completed semesters only
         function updateVisibility() {
             const level = parseInt(selectBox.value);
-            // Allow level 1 or greater
             if (isNaN(level) || level === 0) return;
 
             safeStorage.setItem('userCurrentSem', level);
@@ -821,25 +806,21 @@
             const hint = document.getElementById('start-hint');
             if (hint) hint.style.display = 'none';
 
+            // Show exactly 'level' number of semester inputs (completed semesters)
             semesterData.forEach((sem, idx) => {
                 const row = document.getElementById(`sem-row-${idx}`);
+                if (!row) return;
+
                 const nameLabel = document.getElementById(`sem-name-${idx}`);
                 const helper = document.getElementById(`helper-${idx}`);
 
                 if (idx < level) {
+                    // Show this semester (it's completed)
                     row.style.display = 'flex';
-
-                    // Update dynamic labels
-                    if (idx + 1 === level) {
-                        // Current Semester
-                        nameLabel.innerHTML = `${sem.name} <span class="prediction-label">Simulate Future</span>`;
-                        helper.textContent = 'Optional';
-                    } else {
-                        // Past Semester
-                        nameLabel.textContent = sem.name;
-                        helper.textContent = '';
-                    }
+                    if (nameLabel) nameLabel.textContent = sem.name;
+                    if (helper) helper.textContent = '';
                 } else {
+                    // Hide future semesters
                     row.style.display = 'none';
                 }
             });
@@ -1057,4 +1038,3 @@
 
 
 </html>
-
