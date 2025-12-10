@@ -15,6 +15,7 @@ A simple CGPA Calculator and Honours tracker designed for BDS students of **Univ
 * **Smart Dark Mode:** Automatically detects system preferences and remembers your choice.
 * **Privacy Focused:** No database. All data is stored locally on your device.
 * **Mobile First:** Optimised design for usage on smartphones.
+* **Auto-Restore Data:** All previously entered semester results remain on your device and are automatically restored each time you reopen the calculator.
 
 ## 🛠️ How It Works
 
