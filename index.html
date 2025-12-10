@@ -21,12 +21,18 @@
         content="Calculate your BDS CGPA, track academic goals and honours, and simulate future semester grades. for dental students.">
     <title>Dent_GPA</title>
     <style>
+        /* ===================================
+           RESET & BASE STYLES
+           =================================== */
         *,
         *::before,
         *::after {
             box-sizing: border-box;
         }
 
+        /* ===================================
+           CSS VARIABLES (THEME COLORS)
+           =================================== */
         :root {
             --primary: #2563eb;
             --danger: #dc2626;
@@ -62,6 +68,9 @@
             --error-bg: #3b0b0b;
         }
 
+        /* ===================================
+           LAYOUT & CONTAINER
+           =================================== */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
@@ -118,23 +127,25 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
         }
 
-        /* Privacy Disclaimer */
+        /* ===================================
+           INFO & CONTEXT BOXES
+           =================================== */
         .privacy-disclaimer {
             background: var(--context-bg);
-            padding: 12px 16px;
+            color: var(--muted);
+            padding: 12px;
             border-radius: 8px;
+            font-size: 0.8rem;
             margin-bottom: 24px;
-            text-align: center;
             border: 1px solid var(--context-border);
-            font-size: 0.85rem;
             line-height: 1.4;
         }
 
         .privacy-disclaimer strong {
             color: var(--text);
+            font-weight: 600;
         }
 
-        /* Step 1: Context Box */
         .context-box {
             background: var(--context-bg);
             padding: 20px;
@@ -166,7 +177,9 @@
             appearance: none;
         }
 
-        /* Step 2: Inputs */
+        /* ===================================
+           SEMESTER INPUT ROWS
+           =================================== */
         .semester-row {
             display: flex;
             justify-content: space-between;
@@ -250,7 +263,9 @@
             font-style: italic;
         }
 
-        /* Step 3: Results */
+        /* ===================================
+           RESULTS & CGPA DISPLAY
+           =================================== */
         .cgpa-box {
             text-align: center;
             background: var(--cgpa-bg);
@@ -275,7 +290,9 @@
             margin: 5px 0;
         }
 
-        /* Progress Indicator */
+        /* ===================================
+           PROGRESS BAR
+           =================================== */
         .progress-container {
             margin: 20px 0;
             padding: 16px;
@@ -302,12 +319,10 @@
             color: var(--muted);
         }
 
-
         .progress-bar-wrapper {
             width: 100%;
             height: 12px;
             background: rgba(0, 0, 0, 0.15);
-            /* Dark gray in light mode */
             border-radius: 999px;
             overflow: hidden;
             position: relative;
@@ -315,10 +330,8 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        /* Dark mode - LIGHT wrapper so it's visible */
         [data-theme="dark"] .progress-bar-wrapper {
             background: rgba(255, 255, 255, 0.15);
-            /* LIGHT gray/white - visible against dark background */
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
         }
@@ -326,12 +339,10 @@
         .progress-bar-fill {
             height: 100%;
             background: #22c55e;
-            /* Solid bright green - simple and visible */
             border-radius: 999px;
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Shimmer effect - optional, simple */
         .progress-bar-fill::after {
             content: '';
             position: absolute;
@@ -361,7 +372,9 @@
             color: var(--primary);
         }
 
-        /* Goals List */
+        /* ===================================
+           GOALS & REQUIREMENTS LIST
+           =================================== */
         .goals-list {
             list-style: none;
             padding: 0;
@@ -611,7 +624,11 @@
     </div>
 
     <script>
-        // --- DATA ---
+        /* ===================================
+           JAVASCRIPT - MAIN APPLICATION
+           =================================== */
+
+        // ============ DATA STRUCTURES ============
         const semesterData = [
             { id: 1, name: "1st Semester GPA", credits: 14 },
             { id: 2, name: "2nd Semester GPA", credits: 15 },
@@ -635,41 +652,37 @@
         // Helper specifically for input placeholder context
         const PLACEHOLDER_TEXT = "0-4.0";
 
-        // --- STORAGE ---
+        // ============ UTILITY FUNCTIONS ============
         const safeStorage = {
             setItem: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { } },
             getItem: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
             clear: function () { try { localStorage.clear(); } catch (e) { } }
         };
 
-        // --- HAPTIC FEEDBACK ---
-        function haptic(duration = 10) {
-            if (navigator.vibrate) {
-                navigator.vibrate(duration);
-            }
+        function haptic(ms = 10) {
+            if (navigator.vibrate) navigator.vibrate(ms);
         }
 
-        // --- BANNER ---
-        // Banner should show once per page load. If the user dismisses it,
-        // it stays hidden until the page is reloaded.
-        let bannerDismissedThisLoad = false;
-
-        function dismissBanner() {
-            const banner = document.getElementById('star-banner');
-            if (banner) banner.classList.add('hidden');
-            bannerDismissedThisLoad = true;
-            haptic(10);
-        }
+        // ============ BANNER LOGIC ============
+        let bannerDismissedThisSession = false;
 
         function initBanner() {
             const banner = document.getElementById('star-banner');
             if (!banner) return;
-            // Ensure banner is visible on each new page load unless already dismissed in this load
-            if (bannerDismissedThisLoad) banner.classList.add('hidden');
-            else banner.classList.remove('hidden');
+
+            if (!bannerDismissedThisSession) {
+                banner.style.display = 'flex';
+            }
+
+            const closeBtn = document.getElementById('banner-close');
+            closeBtn.addEventListener('click', () => {
+                haptic();
+                bannerDismissedThisSession = true;
+                banner.style.display = 'none';
+            });
         }
 
-        // --- THEME (dark mode) ---
+        // ============ THEME MANAGEMENT ============
         function applyTheme(theme) {
             const btn = document.getElementById('theme-toggle');
             if (theme === 'dark') {
@@ -699,7 +712,7 @@
         }
 
 
-        // --- LOGIC ---
+        // ============ MAIN APPLICATION LOGIC ============
         const container = document.getElementById('semester-inputs');
         const selectBox = document.getElementById('current-sem-select');
         const resetBtn = document.getElementById('reset-btn');
@@ -707,15 +720,14 @@
         function init() {
             initTheme();
             initBanner();
-            renderInputsOnce(); // Render all inputs once on startup
+            renderInputsOnce();
 
             const saved = safeStorage.getItem('userCurrentSem');
             if (saved && Number(saved) >= 1) {
                 selectBox.value = saved;
-                updateVisibility(); // Show relevant rows
+                updateVisibility();
             }
 
-            // Attach UI listeners
             selectBox.addEventListener('change', () => {
                 haptic();
                 updateVisibility();
@@ -727,9 +739,10 @@
             });
         }
 
-        // NEW: Render all inputs immediately, but hidden
+        // ============ RENDER & VISIBILITY ============
+        // Render all input rows once on page load (hidden by default)
         function renderInputsOnce() {
-            container.innerHTML = ''; // Clear just in case
+            container.innerHTML = '';
 
             semesterData.forEach((sem, idx) => {
                 const row = document.createElement('div');
@@ -806,14 +819,13 @@
             recalc();
         }
 
-        // Show inputs for completed semesters only
+        // Show/hide inputs based on completed semesters
         function updateVisibility() {
             const level = parseInt(selectBox.value);
             if (isNaN(level) || level === 0) return;
 
             safeStorage.setItem('userCurrentSem', level);
 
-            // Hide startup hint if we have a selection
             const hint = document.getElementById('start-hint');
             if (hint) hint.style.display = 'none';
 
@@ -839,6 +851,7 @@
             recalc();
         }
 
+        // ============ INPUT VALIDATION & HANDLING ============
         function handleInput(input, idx) {
             const v = parseFloat(input.value);
             const wrapper = input.parentElement;
@@ -879,12 +892,11 @@
             recalc();
         }
 
+        // ============ CGPA CALCULATION ============
         function recalc() {
-            let pts = 0, cr = 0, tot = 0;
-            // Total Credits for Degree
-            semesterData.forEach(s => tot += s.credits);
+            const totalDegreeCredits = semesterData.reduce((sum, s) => sum + s.credits, 0);
 
-            // Calculate Current
+            let completedCredits = 0, totalGradePoints = 0;
             let currentSemesterHasInput = false;
             const currentLevel = parseInt(selectBox.value) || 0;
 
