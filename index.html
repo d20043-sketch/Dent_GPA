@@ -411,6 +411,15 @@
             border-color: var(--danger);
         }
 
+        .btn-reset.confirm-state {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+            font-weight: bold;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+
         .muted {
             color: var(--muted);
         }
@@ -542,6 +551,7 @@
                 <label for="current-sem-select">I am currently in:</label>
                 <select id="current-sem-select">
                     <option value="0" disabled selected>-- Tap to Select --</option>
+                    <option value="1">1st Semester</option>
                     <option value="2">2nd Semester</option>
                     <option value="3">3rd Semester</option>
                     <option value="4">4th Semester</option>
@@ -572,7 +582,7 @@
                 </div>
 
                 <div class="cgpa-box">
-                    <div class="cgpa-title">Current CGPA</div>
+                    <div class="cgpa-title" id="cgpa-label">Current CGPA</div>
                     <div class="cgpa-value" id="final-cgpa">0.00</div>
                     <div style="font-size:0.8rem; color:var(--muted);">Credits Attempted: <span
                             id="completed-credits">0</span>
@@ -698,17 +708,18 @@
         function init() {
             initTheme();
             initBanner();
+            renderInputsOnce(); // Render all inputs once on startup
+
             const saved = safeStorage.getItem('userCurrentSem');
-            // Restore if valid and >= 2 (app starts at 2nd semester)
-            if (saved && Number(saved) >= 2) {
+            if (saved && Number(saved) >= 1) {
                 selectBox.value = saved;
-                updateUI();
+                updateVisibility(); // Show relevant rows
             }
 
             // Attach UI listeners
             selectBox.addEventListener('change', () => {
                 haptic();
-                updateUI();
+                updateVisibility();
             });
 
             resetBtn.addEventListener('click', () => {
@@ -717,92 +728,120 @@
             });
         }
 
-        function updateUI() {
+        // NEW: Render all inputs immediately, but hidden
+        function renderInputsOnce() {
+            container.innerHTML = ''; // Clear just in case
+
+            semesterData.forEach((sem, idx) => {
+                const row = document.createElement('div');
+                row.className = 'semester-row';
+                row.id = `sem-row-${idx}`; // ID for toggling visibility
+                row.style.display = 'none'; // Hidden by default
+
+                const info = document.createElement('div');
+                const name = document.createElement('span');
+                name.className = 'sem-name';
+                name.id = `sem-name-${idx}`; // ID to update text (Normal vs Simulate)
+                name.textContent = sem.name;
+
+                const credits = document.createElement('span');
+                credits.className = 'sem-credits';
+                credits.textContent = `${sem.credits} Credits`;
+
+                info.appendChild(name);
+                info.appendChild(credits);
+
+                const inputWrapper = document.createElement('div');
+                inputWrapper.style.display = 'flex';
+                inputWrapper.style.flexDirection = 'column';
+                inputWrapper.style.alignItems = 'center';
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.id = `gpa-${idx}`;
+                input.step = '0.01';
+                input.min = '0';
+                input.max = '4.0';
+                input.placeholder = '-';
+                input.inputMode = 'decimal';
+                input.setAttribute('pattern', '[0-4](\\.[0-9]{1,2})?');
+
+                // Helper label (Optional / Scale)
+                const scaleHelper = document.createElement('small');
+                scaleHelper.id = `helper-${idx}`;
+                scaleHelper.style.fontSize = '0.65rem';
+                scaleHelper.style.color = 'var(--muted)';
+                scaleHelper.style.marginTop = '4px';
+                scaleHelper.textContent = '';
+
+                // Restore stored value if present
+                const stored = safeStorage.getItem(`gpa_sem_${idx}`);
+                if (stored) input.value = stored;
+
+                // Attach listeners
+                input.addEventListener('input', () => {
+                    haptic(5);
+                    handleInput(input, idx);
+                });
+
+                // Auto-format on blur
+                input.addEventListener('blur', () => {
+                    const v = parseFloat(input.value);
+                    if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
+                        input.value = v.toFixed(2);
+                        safeStorage.setItem(`gpa_sem_${idx}`, input.value);
+                        recalc();
+                    }
+                });
+
+                inputWrapper.appendChild(input);
+                inputWrapper.appendChild(scaleHelper);
+
+                row.appendChild(info);
+                row.appendChild(inputWrapper);
+
+                container.appendChild(row);
+            });
+
+            // Initial recalc to restore state
+            recalc();
+        }
+
+        // NEW: Only toggles visibility, doesn't destroy DOM
+        function updateVisibility() {
             const level = parseInt(selectBox.value);
+            // Allow level 1 or greater
             if (isNaN(level) || level === 0) return;
 
             safeStorage.setItem('userCurrentSem', level);
 
-            container.innerHTML = '';
+            // Hide startup hint if we have a selection
+            const hint = document.getElementById('start-hint');
+            if (hint) hint.style.display = 'none';
 
             semesterData.forEach((sem, idx) => {
-                // Show all semesters UP TO the current one
+                const row = document.getElementById(`sem-row-${idx}`);
+                const nameLabel = document.getElementById(`sem-name-${idx}`);
+                const helper = document.getElementById(`helper-${idx}`);
+
                 if (idx < level) {
-                    const row = document.createElement('div');
-                    row.className = 'semester-row';
+                    row.style.display = 'flex';
 
-                    const info = document.createElement('div');
-                    const name = document.createElement('span');
-                    name.className = 'sem-name';
-
-                    if ((idx + 1) === level) {
-                        // This is the current semester
-                        name.innerHTML = `${sem.name} <span class="prediction-label">Simulate Future</span>`;
+                    // Update dynamic labels
+                    if (idx + 1 === level) {
+                        // Current Semester
+                        nameLabel.innerHTML = `${sem.name} <span class="prediction-label">Simulate Future</span>`;
+                        helper.textContent = 'Optional';
                     } else {
-                        // Past semester
-                        name.textContent = sem.name;
+                        // Past Semester
+                        nameLabel.textContent = sem.name;
+                        helper.textContent = '';
                     }
-
-                    const credits = document.createElement('span');
-                    credits.className = 'sem-credits';
-                    credits.textContent = `${sem.credits} Credits`;
-
-                    info.appendChild(name);
-                    info.appendChild(credits);
-
-                    const inputWrapper = document.createElement('div');
-                    inputWrapper.style.display = 'flex';
-                    inputWrapper.style.flexDirection = 'column';
-                    inputWrapper.style.alignItems = 'center'; // Center align the scale with the box
-
-                    const input = document.createElement('input');
-                    input.type = 'number';
-                    input.id = `gpa-${idx}`;
-                    input.step = '0.01';
-                    input.min = '0';
-                    input.max = '4.0';
-                    input.placeholder = '-';
-                    input.inputMode = 'decimal';
-                    input.setAttribute('pattern', '[0-4](\\.[0-9]{1,2})?');
-
-                    // Helper label below input (only for current semester)
-                    const scaleHelper = document.createElement('small');
-                    scaleHelper.style.fontSize = '0.65rem';
-                    scaleHelper.style.color = 'var(--muted)';
-                    scaleHelper.style.marginTop = '4px';
-                    scaleHelper.textContent = (idx + 1) === level ? 'Optional' : '';
-
-                    // Restore stored value if present
-                    const stored = safeStorage.getItem(`gpa_sem_${idx}`);
-                    if (stored) input.value = stored;
-
-                    // Attach listeners
-                    input.addEventListener('input', () => {
-                        haptic(5);
-                        handleInput(input, idx);
-                    });
-
-                    // Auto-format on blur
-                    input.addEventListener('blur', () => {
-                        const v = parseFloat(input.value);
-                        if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
-                            input.value = v.toFixed(2);
-                            safeStorage.setItem(`gpa_sem_${idx}`, input.value);
-                            recalc();
-                        }
-                    });
-
-                    inputWrapper.appendChild(input);
-                    inputWrapper.appendChild(scaleHelper);
-
-                    row.appendChild(info);
-                    row.appendChild(inputWrapper);
-
-                    container.appendChild(row);
+                } else {
+                    row.style.display = 'none';
                 }
             });
 
-            // Initial calculation after rebuilding inputs
             recalc();
         }
 
@@ -852,9 +891,19 @@
             semesterData.forEach(s => tot += s.credits);
 
             // Calculate Current
+            let currentSemesterHasInput = false;
+            const currentLevel = parseInt(selectBox.value) || 0;
+
             semesterData.forEach((sem, i) => {
                 const el = document.getElementById(`gpa-${i}`);
                 if (el && el.value !== "") {
+                    // Check if user is simulating the current semester
+                    // i is 0-indexed, currentLevel is 1-indexed. Ex: Sem 2: includes idx 0 & 1.
+                    // If i == (currentLevel - 1), it is the specific "current" semester.
+                    if ((i + 1) === currentLevel) {
+                        currentSemesterHasInput = true;
+                    }
+
                     const v = parseFloat(el.value);
                     if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
                         pts += (v * sem.credits);
@@ -862,6 +911,18 @@
                     }
                 }
             });
+
+            // Adaptive Labeling: Project CGPA vs Current CGPA
+            const titleEl = document.getElementById('cgpa-label');
+            if (titleEl) {
+                if (currentSemesterHasInput) {
+                    titleEl.textContent = 'Projected CGPA';
+                    titleEl.style.color = 'var(--primary)'; // slight emphasis
+                } else {
+                    titleEl.textContent = 'Current CGPA';
+                    titleEl.style.color = 'var(--muted)';
+                }
+            }
 
             const panel = document.getElementById('results-panel');
             if (cr === 0) { panel.style.display = 'none'; return; }
@@ -961,10 +1022,30 @@
 
 
 
+        let resetTimeout;
         function resetData() {
-            if (confirm("Are you sure you want to clear everything?")) {
+            const btn = document.getElementById('reset-btn');
+
+            if (btn.classList.contains('confirm-state')) {
+                // Second tap - Execute Clear
+                haptic(50); // Heavy vibration
                 safeStorage.clear();
                 location.reload();
+            } else {
+                // First tap - Request Confirmation
+                haptic(10);
+                btn.classList.add('confirm-state');
+                const originalText = btn.textContent;
+                btn.textContent = "⚠️ Tap again to Confirm";
+
+                // Clear existing timeout if any
+                if (resetTimeout) clearTimeout(resetTimeout);
+
+                // Auto-reset after 3 seconds
+                resetTimeout = setTimeout(() => {
+                    btn.classList.remove('confirm-state');
+                    btn.textContent = "Clear Data";
+                }, 3000);
             }
         }
 
