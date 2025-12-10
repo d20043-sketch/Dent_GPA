@@ -49,6 +49,14 @@
             --border: #f1f5f9;
             --dashed-border: #e2e8f0;
             --error-bg: #fef2f2;
+
+            /* Honours Tier Colors - Light Mode (3 Tiers) */
+            --honours-first: #16a34a;
+            /* Green - First Class */
+            --honours-second: #ca8a04;
+            /* Yellow - Second Class */
+            --honours-below: #dc2626;
+            /* Red - Below Second */
         }
 
         /* Dark theme overrides */
@@ -66,6 +74,14 @@
             --border: rgba(255, 255, 255, 0.04);
             --dashed-border: rgba(255, 255, 255, 0.06);
             --error-bg: #3b0b0b;
+
+            /* Honours Tier Colors - Dark Mode (3 Tiers - Brighter) */
+            --honours-first: #22c55e;
+            /* Bright Green - First Class */
+            --honours-second: #fbbf24;
+            /* Bright Yellow - Second Class */
+            --honours-below: #f87171;
+            /* Bright Red - Below Second */
         }
 
         /* ===================================
@@ -288,6 +304,45 @@
             color: var(--primary);
             line-height: 1.1;
             margin: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        /* Honours Tier Styling - 3 Tiers (Traffic Light) */
+        .cgpa-box.tier-first {
+            background: rgba(22, 163, 74, 0.08);
+        }
+
+        .cgpa-value.tier-first {
+            color: var(--honours-first);
+        }
+
+        .cgpa-box.tier-second {
+            background: rgba(202, 138, 4, 0.08);
+        }
+
+        .cgpa-value.tier-second {
+            color: var(--honours-second);
+        }
+
+        .cgpa-box.tier-below {
+            background: rgba(220, 38, 38, 0.08);
+        }
+
+        .cgpa-value.tier-below {
+            color: var(--honours-below);
+        }
+
+        /* Dark mode - stronger background tints */
+        [data-theme="dark"] .cgpa-box.tier-first {
+            background: rgba(34, 197, 94, 0.12);
+        }
+
+        [data-theme="dark"] .cgpa-box.tier-second {
+            background: rgba(251, 191, 36, 0.12);
+        }
+
+        [data-theme="dark"] .cgpa-box.tier-below {
+            background: rgba(248, 113, 113, 0.12);
         }
 
         /* ===================================
@@ -892,6 +947,30 @@
             recalc();
         }
 
+        // ============ HONOURS TIER DETECTION ============
+        function getHonoursTier(cgpa) {
+            if (cgpa >= 3.70) return 'first';   // First Class - Green
+            if (cgpa >= 3.00) return 'second';  // Second Class - Yellow
+            return 'below';                      // Below Second - Red
+        }
+
+        function updateCGPAColor(cgpa) {
+            const tier = getHonoursTier(cgpa);
+            const cgpaValue = document.querySelector('.cgpa-value');
+            const cgpaBox = document.querySelector('.cgpa-box');
+
+            if (!cgpaValue || !cgpaBox) return;
+
+            // Remove all tier classes
+            const tierClasses = ['tier-first', 'tier-second', 'tier-below'];
+            cgpaValue.classList.remove(...tierClasses);
+            cgpaBox.classList.remove(...tierClasses);
+
+            // Add current tier class
+            cgpaValue.classList.add(`tier-${tier}`);
+            cgpaBox.classList.add(`tier-${tier}`);
+        }
+
         // ============ CGPA CALCULATION ============
         function recalc() {
             const totalDegreeCredits = semesterData.reduce((sum, s) => sum + s.credits, 0);
@@ -912,8 +991,8 @@
 
                     const v = parseFloat(el.value);
                     if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
-                        pts += (v * sem.credits);
-                        cr += sem.credits;
+                        totalGradePoints += (v * sem.credits);
+                        completedCredits += sem.credits;
                     }
                 }
             });
@@ -931,19 +1010,22 @@
             }
 
             const panel = document.getElementById('results-panel');
-            if (cr === 0) { panel.style.display = 'none'; return; }
+            if (completedCredits === 0) { panel.style.display = 'none'; return; }
 
             panel.style.display = 'block';
-            const cgpa = pts / cr;
+            const cgpa = totalGradePoints / completedCredits;
             const cgpaEl = document.getElementById('final-cgpa');
             cgpaEl.innerText = isFinite(cgpa) ? cgpa.toFixed(2) : '0.00';
-            document.getElementById('completed-credits').innerText = cr;
+            document.getElementById('completed-credits').innerText = completedCredits;
+
+            // Update CGPA color based on honours tier
+            updateCGPAColor(cgpa);
 
             // Update Progress Indicator
-            updateProgressIndicator(cr, tot);
+            updateProgressIndicator(completedCredits, totalDegreeCredits);
 
             // Calculate Future
-            const remCr = tot - cr;
+            const remCr = totalDegreeCredits - completedCredits;
             const list = document.getElementById('goals-list');
             list.innerHTML = '';
 
@@ -954,7 +1036,7 @@
                     html = cgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
                 } else {
                     // Degree In Progress
-                    const reqRaw = ((g.minCGPA * tot) - pts) / remCr;
+                    const reqRaw = ((g.minCGPA * totalDegreeCredits) - totalGradePoints) / remCr;
                     const req = reqRaw;
 
                     if (req > 4.0) html = '<span class="status-impossible">Unattainable ❌</span>';
@@ -975,7 +1057,7 @@
                 if (remCr <= 0) {
                     subtext = '';
                 } else {
-                    const reqAcross = ((g.minCGPA * tot) - pts) / remCr;
+                    const reqAcross = ((g.minCGPA * totalDegreeCredits) - totalGradePoints) / remCr;
                     if (!isFinite(reqAcross)) subtext = '';
                     else if (reqAcross > 4.0) subtext = `In upcoming ${upcomingSemesters} semesters you would need an average ≥ ${reqAcross.toFixed(2)} (Unattainable).`;
                     else if (reqAcross <= 0) subtext = `No additional average required — goal secured.`;
