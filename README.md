@@ -11,6 +11,8 @@ A simple CGPA Calculator and Honours tracker designed for BDS students of **Univ
 ## 🚀 Key Features
 * **Run Locally:** The application is a single HTML file and runs instantly from any device's local storage—just open the file!
 * **Instant Calculation:** Calculates CGPA in real-time.
+* **Visual Progress Tracking:** Animated progress bar shows your degree completion percentage 
+* **Smart Input Validation:** Color-coded inputs with real-time feedback
 * **Honours Forecasting:** Tells exact average GPA you need in future semesters to achieve a **First Class**, **Second Upper**, etc.
 * **Smart Dark Mode:** Automatically detects system preferences and remembers your choice.
 * **Privacy Focused:** No database. All data is stored locally on your device.
@@ -24,6 +26,7 @@ A simple CGPA Calculator and Honours tracker designed for BDS students of **Univ
 3.  **View Forecast:** The app calculates your current standing and projects the required average for remaining semesters.
     * ✅ **On Track:** You are safe to maintain current performance.
     * ❌ **Unattainable:** The goal is mathematically unreachable (requires > 4.0).
+    * **Specific GPA Required:** Shows the exact average needed in upcoming semesters.
 
 ## ⚙️ Configuration (For Developers)
 
