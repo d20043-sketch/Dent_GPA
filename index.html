@@ -17,8 +17,7 @@
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="X9oORb8LFYD38B4c7vNz9HDdK1guR19knfI-kO1xUZU" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Calculate your BDS CGPA, track academic goals and honours, and simulate future semester grades. for dental students.">
+    <meta name="description" content="Calculate your BDS CGPA, track academic goals and honours for dental students.">
     <title>Dent_GPA</title>
 
     <!-- Google Fonts - Inter -->
@@ -56,13 +55,13 @@
             --dashed-border: #e2e8f0;
             --error-bg: #fef2f2;
 
-            /* Honours Tier Colors - Light Mode (3 Tiers) */
+            /* Honours Tier Colors (Traffic Light System) */
             --honours-first: #16a34a;
-            /* Green - First Class */
+            /* Green - First Class ≥3.70 */
             --honours-second: #ca8a04;
-            /* Yellow - Second Class */
+            /* Yellow - Second Class ≥3.00 */
             --honours-below: #dc2626;
-            /* Red - Below Second */
+            /* Red - Below Second <3.00 */
         }
 
         /* Dark theme overrides */
@@ -81,7 +80,7 @@
             --dashed-border: rgba(255, 255, 255, 0.06);
             --error-bg: #3b0b0b;
 
-            /* Honours Tier Colors - Dark Mode (3 Tiers - Brighter) */
+            /* Honours Tier Colors - Dark Mode (Brighter for visibility) */
             --honours-first: #22c55e;
             /* Bright Green - First Class */
             --honours-second: #fbbf24;
@@ -988,9 +987,7 @@
             semesterData.forEach((sem, i) => {
                 const el = document.getElementById(`gpa-${i}`);
                 if (el && el.value !== "") {
-                    // Check if user is simulating the current semester
-                    // i is 0-indexed, currentLevel is 1-indexed. Ex: Sem 2: includes idx 0 & 1.
-                    // If i == (currentLevel - 1), it is the specific "current" semester.
+                    // Track if the last semester (current level) has input
                     if ((i + 1) === currentLevel) {
                         currentSemesterHasInput = true;
                     }
@@ -1038,10 +1035,8 @@
             honorsGoals.forEach(g => {
                 let html = '';
                 if (remCr <= 0) {
-                    // Degree Complete
                     html = cgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
                 } else {
-                    // Degree In Progress
                     const reqRaw = ((g.minCGPA * totalDegreeCredits) - totalGradePoints) / remCr;
                     const req = reqRaw;
 
