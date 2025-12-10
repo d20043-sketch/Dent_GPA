@@ -215,6 +215,18 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
         }
 
+        .prediction-label {
+            display: inline-block;
+            background-color: var(--context-bg);
+            color: var(--primary);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            border: 1px solid var(--context-border);
+            vertical-align: middle;
+        }
+
         input.error {
             border-color: var(--danger);
             background: var(--error-bg);
@@ -504,6 +516,10 @@
             { name: "Second Lower", minCGPA: 3.00 }
         ];
 
+        // --- UX HELPERS ---
+        // Helper specifically for input placeholder context
+        const PLACEHOLDER_TEXT = "0-4.0";
+
         // --- STORAGE ---
         const safeStorage = {
             setItem: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { } },
@@ -612,7 +628,14 @@
                     const info = document.createElement('div');
                     const name = document.createElement('span');
                     name.className = 'sem-name';
-                    name.textContent = (idx + 1) === level ? `${sem.name} (Current)` : sem.name;
+
+                    if ((idx + 1) === level) {
+                        // This is the current semester
+                        name.innerHTML = `${sem.name} <span class="prediction-label">Simulate Future</span>`;
+                    } else {
+                        // Past semester
+                        name.textContent = sem.name;
+                    }
 
                     const credits = document.createElement('span');
                     credits.className = 'sem-credits';
@@ -620,6 +643,11 @@
 
                     info.appendChild(name);
                     info.appendChild(credits);
+
+                    const inputWrapper = document.createElement('div');
+                    inputWrapper.style.display = 'flex';
+                    inputWrapper.style.flexDirection = 'column';
+                    inputWrapper.style.alignItems = 'center'; // Center align the scale with the box
 
                     const input = document.createElement('input');
                     input.type = 'number';
@@ -629,6 +657,13 @@
                     input.max = '4.0';
                     input.placeholder = '-';
                     input.inputMode = 'decimal';
+
+                    // Helper label below input
+                    const scaleHelper = document.createElement('small');
+                    scaleHelper.style.fontSize = '0.65rem';
+                    scaleHelper.style.color = 'var(--muted)';
+                    scaleHelper.style.marginTop = '4px';
+                    scaleHelper.textContent = (idx + 1) === level ? 'Optional' : 'Scale: 0-4.0';
 
                     // Restore stored value if present
                     const stored = safeStorage.getItem(`gpa_sem_${idx}`);
@@ -640,8 +675,11 @@
                         handleInput(input, idx);
                     });
 
+                    inputWrapper.appendChild(input);
+                    inputWrapper.appendChild(scaleHelper);
+
                     row.appendChild(info);
-                    row.appendChild(input);
+                    row.appendChild(inputWrapper);
 
                     container.appendChild(row);
                 }
