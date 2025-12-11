@@ -971,7 +971,8 @@
 
             semesterData.forEach((sem, i) => {
                 const el = document.getElementById(`gpa-${i}`);
-                if (el && el.value !== "") {
+                // Only include semesters within the selected range
+                if (el && el.value !== "" && (i + 1) <= currentLevel) {
 
                     const v = parseFloat(el.value);
                     if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
@@ -1017,12 +1018,13 @@
                     else html = `<span class="goal-val">${Math.min(4.0, Math.max(0, req)).toFixed(2)}</span>`;
                 }
 
-                // Determine upcoming semesters (count of semesters left based on inputs entered)
-                const completedSemesters = semesterData.reduce((c, s, i) => {
+                // Determine upcoming semesters (count of semesters left based on inputs entered AND selected range)
+                const completedSemestersCount = semesterData.reduce((c, s, i) => {
                     const el = document.getElementById(`gpa-${i}`);
-                    return c + (el && el.value !== '' ? 1 : 0);
+                    // Only count if valid AND within the selected range
+                    return c + (el && el.value !== '' && (i + 1) <= currentLevel ? 1 : 0);
                 }, 0);
-                const upcomingSemesters = Math.max(0, semesterData.length - completedSemesters);
+                const upcomingSemesters = Math.max(0, semesterData.length - completedSemestersCount);
 
                 // Build subtext explaining the required average across upcoming semesters
                 let subtext = '';
@@ -1050,10 +1052,14 @@
         }
 
         function updateProgressIndicator(completedCredits, totalCredits) {
-            // Count completed semesters (those with valid GPA entries)
+            // Get current semester limit
+            const selectBox = document.getElementById('current-sem-select');
+            const currentLevel = parseInt(selectBox.value) || 0;
+
+            // Count completed semesters (those with valid GPA entries AND within selected range)
             const completedSemesters = semesterData.reduce((count, sem, i) => {
                 const el = document.getElementById(`gpa-${i}`);
-                return count + (el && el.value !== '' && !el.classList.contains('error') ? 1 : 0);
+                return count + (el && el.value !== '' && !el.classList.contains('error') && (i + 1) <= currentLevel ? 1 : 0);
             }, 0);
 
             const totalSemesters = semesterData.length;
