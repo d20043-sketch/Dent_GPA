@@ -151,21 +151,7 @@
         /* ===================================
            INFO & CONTEXT BOXES
            =================================== */
-        .privacy-disclaimer {
-            background: var(--context-bg);
-            color: var(--muted);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            margin-bottom: 24px;
-            border: 1px solid var(--context-border);
-            line-height: 1.4;
-        }
 
-        .privacy-disclaimer strong {
-            color: var(--text);
-            font-weight: 600;
-        }
 
         .context-box {
             background: var(--context-bg);
@@ -615,11 +601,7 @@
                 BDS
                 CGPA</p>
 
-            <div class="privacy-disclaimer">
-                <strong>Privacy Notice:</strong> All calculations are performed entirely on your device. Your results
-                are
-                never sent to any server. This tool is for personal use only.
-            </div>
+
 
             <div class="context-box">
                 <label for="current-sem-select">Semesters you have completed:</label>
@@ -672,6 +654,10 @@
             <div class="footer">
                 <div class="footer-name">Developed by Ramanitharan Kanishkar 🦆</div>
                 <div class="footer-batch"> 2020 Batch</div>
+                <div style="margin-top: 12px; font-size: 0.75rem; color: var(--muted); line-height: 1.4;">
+                    🔒 <strong style="color: var(--text);">Privacy:</strong> All calculations are performed entirely on
+                    your device. Your results are never sent to any server.
+                </div>
             </div>
         </div>
     </main>
