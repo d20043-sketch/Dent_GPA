@@ -981,16 +981,11 @@
             const totalDegreeCredits = semesterData.reduce((sum, s) => sum + s.credits, 0);
 
             let completedCredits = 0, totalGradePoints = 0;
-            let currentSemesterHasInput = false;
             const currentLevel = parseInt(selectBox.value) || 0;
 
             semesterData.forEach((sem, i) => {
                 const el = document.getElementById(`gpa-${i}`);
                 if (el && el.value !== "") {
-                    // Track if the last semester (current level) has input
-                    if ((i + 1) === currentLevel) {
-                        currentSemesterHasInput = true;
-                    }
 
                     const v = parseFloat(el.value);
                     if (Number.isFinite(v) && v >= 0 && v <= 4.0) {
@@ -1000,17 +995,7 @@
                 }
             });
 
-            // Adaptive Labeling: Project CGPA vs Current CGPA
-            const titleEl = document.getElementById('cgpa-label');
-            if (titleEl) {
-                if (currentSemesterHasInput) {
-                    titleEl.textContent = 'Projected CGPA';
-                    titleEl.style.color = 'var(--primary)'; // slight emphasis
-                } else {
-                    titleEl.textContent = 'Current CGPA';
-                    titleEl.style.color = 'var(--muted)';
-                }
-            }
+
 
             const panel = document.getElementById('results-panel');
             if (completedCredits === 0) { panel.style.display = 'none'; return; }
