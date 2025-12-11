@@ -867,12 +867,22 @@
 
         // Show/hide inputs based on completed semesters
         function updateVisibility() {
-            const level = parseInt(selectBox.value);
-            if (isNaN(level) || level === 0) return;
-
+            const level = parseInt(selectBox.value) || 0;
             safeStorage.setItem('userCurrentSem', level);
 
             const hint = document.getElementById('start-hint');
+
+            // Handle initial/reset state
+            if (level === 0) {
+                if (hint) hint.style.display = 'block';
+                semesterData.forEach((sem, idx) => {
+                    const row = document.getElementById(`sem-row-${idx}`);
+                    if (row) row.style.display = 'none';
+                });
+                document.getElementById('results-panel').style.display = 'none';
+                return;
+            }
+
             if (hint) hint.style.display = 'none';
 
             // Show exactly 'level' number of semester inputs (completed semesters)
@@ -1096,7 +1106,29 @@
                 // Second tap - Execute Clear
                 haptic(50); // Heavy vibration
                 safeStorage.clear();
-                location.reload();
+
+
+                // Manual Reset without Reload (Fixes persistent dropdown bug)
+                if (selectBox) selectBox.value = '0';
+
+                // Clear input values strictly, do NOT destroy the DOM elements
+                const inputs = container.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.value = '';
+                    input.classList.remove('valid', 'error'); // Remove validation classes
+                });
+
+                document.getElementById('results-panel').style.display = 'none';
+
+                // Reset button state immediately
+                btn.classList.remove('confirm-state');
+                btn.textContent = "Clear Data";
+
+                // Refresh UI
+                updateVisibility();
+
+                // Optional: Reset theme to default if desired, or leave as is
+                // initTheme(); 
             } else {
                 // First tap - Request Confirmation
                 haptic(10);
