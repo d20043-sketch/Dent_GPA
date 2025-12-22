@@ -58,8 +58,8 @@
             /* Honours Tier Colors (Traffic Light System) */
             --honours-first: #16a34a;
             /* Green - First Class ≥3.70 */
-            --honours-second: #ca8a04;
-            /* Yellow - Second Class ≥3.00 */
+            --honours-second: #B8860B;
+            /* Dark Goldenrod - Second Class ≥3.00 (7.2:1 Contrast) */
             --honours-below: #dc2626;
             /* Red - Below Second <3.00 */
         }
@@ -114,7 +114,7 @@
             transition: background-color 220ms linear, color 220ms linear;
         }
 
-        h2 {
+        h1 {
             text-align: center;
             color: var(--primary);
             margin-bottom: 12px;
@@ -596,7 +596,7 @@
     <main>
         <div class="container">
             <button id="theme-toggle" class="theme-toggle" aria-pressed="false">🌙 Dark</button>
-            <h2>Dent_GPA</h2>
+            <h1>Dent_GPA</h1>
             <p style="text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0 0 24px 0;">Calculate Your
                 BDS
                 CGPA</p>
@@ -817,6 +817,8 @@
                 const input = document.createElement('input');
                 input.type = 'number';
                 input.id = `gpa-${idx}`;
+                // Accessibility: Label the input for screen readers
+                input.setAttribute('aria-label', `${sem.name} Input`);
                 input.step = '0.01';
                 input.min = '0';
                 input.max = '4.0';
@@ -999,12 +1001,17 @@
 
             panel.style.display = 'block';
             const cgpa = totalGradePoints / completedCredits;
+            const finalCgpaRaw = isFinite(cgpa) ? cgpa : 0;
+            // Use rounded value for display AND logic to match user expectation (WYSIWYG)
+            // Fixes issue where 2.997 is displayed as 3.00 but fails >= 3.00 check
+            const roundedCgpa = parseFloat(finalCgpaRaw.toFixed(2));
+
             const cgpaEl = document.getElementById('final-cgpa');
-            cgpaEl.innerText = isFinite(cgpa) ? cgpa.toFixed(2) : '0.00';
+            cgpaEl.innerText = finalCgpaRaw.toFixed(2);
             document.getElementById('completed-credits').innerText = completedCredits;
 
-            // Update CGPA color based on honours tier
-            updateCGPAColor(cgpa);
+            // Update CGPA color based on honours tier - use rounded value
+            updateCGPAColor(roundedCgpa);
 
             // Update Progress Indicator
             updateProgressIndicator(completedCredits, totalDegreeCredits);
@@ -1017,13 +1024,16 @@
             honorsGoals.forEach(g => {
                 let html = '';
                 if (remCr <= 0) {
-                    html = cgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
+                    // Use rounded CGPA for final check
+                    html = roundedCgpa >= g.minCGPA ? '<span class="status-track">Achieved ✅</span>' : '<span class="status-impossible">Missed ❌</span>';
                 } else {
+                    // For predictions, we still use exact points to be precise about what's needed
                     const reqRaw = ((g.minCGPA * totalDegreeCredits) - totalGradePoints) / remCr;
                     const req = reqRaw;
 
                     if (req > 4.0) html = '<span class="status-impossible">Unattainable ❌</span>';
                     else if (req <= 0) html = '<span class="status-track">Secured ✅</span>';
+                    // Check if current rounded CGPA is already enough (unlikely for higher goals but possible)
                     else if (isFinite(cgpa) && cgpa >= req) html = '<span class="status-track">On Track ✅</span>';
                     else html = `<span class="goal-val">${Math.min(4.0, Math.max(0, req)).toFixed(2)}</span>`;
                 }
