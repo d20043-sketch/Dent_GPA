@@ -665,8 +665,8 @@
     <div class="star-banner" id="star-banner">
         <div class="star-banner-text">⭐ If this tool helped you, please consider giving it a star on GitHub!</div>
         <a href="https://github.com/d20043-sketch/Dent_GPA" class="star-banner-link" target="_blank"
-            onclick="haptic(15);">Star on GitHub</a>
-        <button class="star-banner-close" id="banner-close" aria-label="Dismiss" onclick="dismissBanner();">✕</button>
+            onclick="haptic(40);">Star on GitHub</a>
+        <button class="star-banner-close" id="banner-close" aria-label="Dismiss">✕</button>
     </div>
 
     <script>
@@ -705,7 +705,7 @@
             clear: function () { try { localStorage.clear(); } catch (e) { } }
         };
 
-        function haptic(ms = 10) {
+        function haptic(ms = 40) {
             if (navigator.vibrate) navigator.vibrate(ms);
         }
 
@@ -780,7 +780,6 @@
             });
 
             resetBtn.addEventListener('click', () => {
-                haptic(20);
                 resetData();
             });
         }
@@ -840,7 +839,7 @@
 
                 // Attach listeners
                 input.addEventListener('input', () => {
-                    haptic(5);
+                    haptic(20);
                     handleInput(input, idx);
                 });
 
@@ -1114,7 +1113,7 @@
 
             if (btn.classList.contains('confirm-state')) {
                 // Second tap - Execute Clear
-                haptic(50); // Heavy vibration
+                haptic(80); // Heavy vibration
                 safeStorage.clear();
 
 
@@ -1141,7 +1140,7 @@
                 // initTheme(); 
             } else {
                 // First tap - Request Confirmation
-                haptic(10);
+                haptic(40);
                 btn.classList.add('confirm-state');
                 const originalText = btn.textContent;
                 btn.textContent = "⚠️ Tap again to Confirm";
